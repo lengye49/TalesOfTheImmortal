@@ -4,7 +4,7 @@ using System.Collections;
 public class BattleCell : MonoBehaviour
 {
     /// <summary>
-    /// state: 0normal, 1active, 2targeting area
+    /// state: 0normal, 1walkable, 2selecting, 3targeting
     /// </summary>
     private int state;
 

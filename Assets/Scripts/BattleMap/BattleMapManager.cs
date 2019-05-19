@@ -22,7 +22,7 @@ public class BattleMapManager {
     void InitBattleMap(){
         mapGrids = new BattleGrid[10][];
         for (int i = 0; i < mapGrids.Length;i++){
-            mapGrids[i] = new BattleGrid[10];
+            mapGrids[i] = new BattleGrid[20];
             for (int j = 0; j < mapGrids[i].Length;j++){
                 mapGrids[i][j] = new BattleGrid(i,j);
             }
