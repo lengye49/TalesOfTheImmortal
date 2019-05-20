@@ -3,6 +3,8 @@ using System.Collections;
 
 public class SkillEffectHandler 
 {
+    public SkillEffectHandler(){}
+
     //1.治疗,返回实际加血量
     int Heal(BattleUnit attacker, string param, BattleUnit target)
     {

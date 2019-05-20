@@ -6,6 +6,7 @@ public class BattleGrid
 {
     public Vector2Int Position;
     public bool Walkable;
+    public int SelectedCount;//被多少角色占用了选中状态
 
     public BattleGrid(Vector2Int _pos)
     {
@@ -75,3 +76,4 @@ public enum GridDirection{
     Up,
     Down
 }
+

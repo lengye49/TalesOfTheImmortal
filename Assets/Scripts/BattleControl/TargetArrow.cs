@@ -1,68 +1,114 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TargetArrow : MonoBehaviour
 {
-    //public RectTransform arrow;
-    //private bool isOn = false;
-    //private TargetHover lastHover = null;
-    //private TargetHover thisHover = null;
+    private bool isOn = false;
 
-    //void Start()
-    //{
-    //    Off();
-    //}
+    Vector3 attackerPosition;
+    Vector3 mouseScreenPosition;
+    Vector3 mouseWorldPosition;
+    Vector3 mouseVector;
+    Vector3 standardVector;
 
-    //void Update()
-    //{
-    //    if (isOn)
-    //    {
-    //        RaycastHit2D hit = Physics2D.Raycast(Input.mousePosition, -Vector2.up);
-    //        if (hit.collider == null)
-    //        {
-    //            if (lastHover != null)
-    //                lastHover.Recover();
-    //        }
-    //        else
-    //        {
-    //            thisHover = hit.collider.GetComponent<TargetHover>();
-    //            if (thisHover != lastHover)
-    //            {
-    //                if (lastHover != null)
-    //                    lastHover.Recover();
+    Dictionary<GridDirection, List<BattleGrid>> targetGridList;
+    List<BattleGrid> targetGrids;
 
-    //                lastHover = thisHover;
+    Skill skillCasting;
 
-    //                if (lastHover != null)
-    //                    lastHover.HighLight();
-    //            }
-    //        }
-    //    }
-    //}
+    void Start()
+    {
+        float angle = Vector3.Angle(Vector3.right, Vector3.up);
+        Debug.Log("right-->up = " + angle);
+        angle = Vector3.Angle(Vector3.right, Vector3.down);
+        Debug.Log("right-->down = " + angle);
+        angle = Vector3.Angle(Vector3.right, Vector3.left);
+        Debug.Log("right-->back = " + angle);
 
-    //public void On(Vector3 pos)
-    //{
-    //    arrow.gameObject.SetActive(true);
-    //    arrow.localPosition = pos;
-    //    isOn = true;
-    //}
 
-    //public void Off()
-    //{
-    //    arrow.gameObject.SetActive(false);
-    //    arrow.sizeDelta = new Vector2(arrow.sizeDelta.x, 5f);
-    //    isOn = false;
-    //    if (lastHover != null)
-    //        lastHover.Recover();
-    //}
+        Off();
+    }
 
-    //public void UpdateArrow(Vector3 basePos, Vector3 targetPos)
-    //{
+    void Update()
+    {
+        if (isOn)
+        {
+            mouseScreenPosition = Input.mousePosition;
+            mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
+            mouseVector = mouseWorldPosition - attackerPosition;
+            float angle = Vector3.Angle(Vector3.right, mouseVector);
+            bool above = mouseWorldPosition.y > standardVector.y;
+            GridDirection direction = GetPointingDirection(angle, above);
+            SetTargetGrids(direction);
 
-    //    float d = Vector3.Distance(basePos, targetPos);
-    //    arrow.sizeDelta = new Vector2(arrow.sizeDelta.x, d);
+        }
+    }
 
-    //    float a = Mathf.Atan2((targetPos.x - basePos.x), (targetPos.y - basePos.y));
-    //    arrow.localRotation = Quaternion.Euler(new Vector3(0f, 0f, -a * 180 / Mathf.PI));
-    //}
+    GridDirection GetPointingDirection(float angle,bool isAbove){
+        if(angle<60 && angle>0 ){
+            if (isAbove)
+                return GridDirection.RightUp;
+            else
+                return GridDirection.RightDown;
+        }else if(angle>60 && angle<120){
+            if (isAbove)
+                return GridDirection.Up;
+            else
+                return GridDirection.Down;
+        }else{
+            if (isAbove)
+                return GridDirection.LeftUp;
+            else
+                return GridDirection.RightDown;
+        }
+    }
+
+    void SetTargetGrids(GridDirection direction){
+        if (targetGridList.ContainsKey(direction))
+        {
+            targetGrids = targetGridList[direction];
+            return;
+        }
+        switch(skillCasting.RangeType){
+            case SkillRangeType.Line:
+                targetGrids = BattleMapManager.Instance.LineTargets(direction, skillCasting.Range);
+                break;
+            case SkillRangeType.Fan:
+                targetGrids = BattleMapManager.Instance.FanTargets(direction, skillCasting.Range);
+                break;
+            case SkillRangeType.Circle:
+                targetGrids = BattleMapManager.Instance.CircleTargets(skillCasting.Range);
+                break;
+            default:
+                break;
+        }
+        targetGridList.Add(direction, targetGrids);
+    }
+
+
+
+    /// <summary>
+    /// 激活选择目标，pos为技能释放者的世界坐标.
+    /// </summary>
+    public void On(Vector3 pos,Skill skill)
+    {
+        attackerPosition = pos;
+        standardVector = pos + Vector3.one;
+        isOn = true;
+
+        targetGridList = new Dictionary<GridDirection, List<BattleGrid>>();
+        targetGrids = new List<BattleGrid>();
+
+        skillCasting = skill;
+    }
+
+    public void Off()
+    {
+        isOn = false;
+
+        targetGridList = null;
+        targetGrids = null;
+    }
+
 }

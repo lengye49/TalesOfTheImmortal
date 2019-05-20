@@ -22,6 +22,9 @@ public enum SkillRangeType{
 
 public enum SkillEffectType{
     Heal,
-    Damage,
-    Break,
+    PhysicalDamage,
+    MagicalDamage,
+    DirectDamage,
+    AddMp,
+    Summon,
 }
