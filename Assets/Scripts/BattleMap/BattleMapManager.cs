@@ -20,9 +20,9 @@ public class BattleMapManager {
 
 
     void InitBattleMap(){
-        mapGrids = new BattleGrid[10][];
+        mapGrids = new BattleGrid[20][];
         for (int i = 0; i < mapGrids.Length;i++){
-            mapGrids[i] = new BattleGrid[20];
+            mapGrids[i] = new BattleGrid[10];
             for (int j = 0; j < mapGrids[i].Length;j++){
                 mapGrids[i][j] = new BattleGrid(i,j);
             }
@@ -35,7 +35,7 @@ public class BattleMapManager {
     /// <summary>
     /// 获得目标点某方向上相邻的格子
     /// </summary>
-    public BattleGrid GetGridByDirection(BattleGrid _grid, GridDirection _direction){
+    BattleGrid GetGridByDirection(BattleGrid _grid, GridDirection _direction){
         Vector2Int pos;
         switch (_direction)
         {
@@ -70,7 +70,7 @@ public class BattleMapManager {
     /// <summary>
     /// 根据方向和格子数获得线形区域内的格子，不包含目标点
     /// </summary>
-    public List<BattleGrid> GetGridsByLineAndCount(GridDirection direction, int count = 1)
+    public List<BattleGrid> LineTargets(GridDirection direction, int count = 1)
     {
         List<BattleGrid> grids = new List<BattleGrid>();
         BattleGrid lastGrid = standingGrid;
@@ -86,7 +86,7 @@ public class BattleMapManager {
     /// <summary>
     /// 根据方向和格子数获得扇形区域内的格子，包含目标点
     /// </summary>
-    public List<BattleGrid> Fan(GridDirection direction, int count)
+    public List<BattleGrid> FanTargets(GridDirection direction, int count)
     {
         List<BattleGrid> grids = new List<BattleGrid>();
         grids.Add(targetGrid);
@@ -122,7 +122,7 @@ public class BattleMapManager {
     /// <summary>
     /// 根据格子数获得圆形区域内的格子，包含目标点
     /// </summary>
-    public List<BattleGrid> Circle(int count=1)
+    public List<BattleGrid> CircleTargets(int count=1)
     {
         List<BattleGrid> grids = new List<BattleGrid>();
         grids.Add(targetGrid);
@@ -150,7 +150,7 @@ public class BattleMapManager {
         return grids;
     }
 
-    public List<BattleGrid> GetNeighbour(BattleGrid grid){
+    List<BattleGrid> GetNeighbour(BattleGrid grid){
         return new List<BattleGrid>
         {
             GetGridByDirection(grid, GridDirection.LeftUp),
@@ -162,7 +162,7 @@ public class BattleMapManager {
         };
     }
 
-    public List<BattleGrid> GetFanNeighbour(BattleGrid grid, List<GridDirection> directions)
+    List<BattleGrid> GetFanNeighbour(BattleGrid grid, List<GridDirection> directions)
     {
         List<BattleGrid> grids = new List<BattleGrid>();
 
@@ -181,7 +181,7 @@ public class BattleMapManager {
         return grids;
     }
 
-    public List<GridDirection> GetFanDirections(GridDirection main){
+    List<GridDirection> GetFanDirections(GridDirection main){
         List<GridDirection> directions = new List<GridDirection>();
         directions.Add(main);
         switch(main){
@@ -214,3 +214,4 @@ public class BattleMapManager {
     }
 
 }
+
