@@ -27,7 +27,7 @@ public class TargetArrow : MonoBehaviour
         Debug.Log("right-->back = " + angle);
 
 
-        Off();
+        On(new Vector3(0f,0f,-10f),null);
     }
 
     void Update()
@@ -36,12 +36,13 @@ public class TargetArrow : MonoBehaviour
         {
             mouseScreenPosition = Input.mousePosition;
             mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
+            //Debug.Log(mouseWorldPosition);
             mouseVector = mouseWorldPosition - attackerPosition;
             float angle = Vector3.Angle(Vector3.right, mouseVector);
             bool above = mouseWorldPosition.y > standardVector.y;
             GridDirection direction = GetPointingDirection(angle, above);
             SetTargetGrids(direction);
-
+            Debug.Log(direction.ToString());
         }
     }
 
@@ -60,7 +61,7 @@ public class TargetArrow : MonoBehaviour
             if (isAbove)
                 return GridDirection.LeftUp;
             else
-                return GridDirection.RightDown;
+                return GridDirection.LeftDown;
         }
     }
 

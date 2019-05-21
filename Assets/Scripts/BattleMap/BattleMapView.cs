@@ -29,16 +29,20 @@ public class BattleMapView : MonoBehaviour {
     }
 
     void InitBattleMapView(){
+        cellList = new GameObject[20][];
         for (int i = 0; i < 20;i++){
+            cellList[i] = new GameObject[10];
             for (int j = 0; j < 10; j++)
-                InitGrid(i, j);
+            {
+                cellList[i][j]= InitGrid(i, j);
+            }
         }
     }
 
     GameObject InitGrid(int xCount, int yCount)
     {
         GameObject o = Instantiate(cellPrafab) as GameObject;
-        o.transform.parent = this.transform;
+        o.transform.SetParent(this.transform);
         o.transform.localScale = Vector2.one;
         o.transform.localPosition = GetCellPosition(xCount, yCount);
         o.GetComponent<BattleCell>().ResetState();
