@@ -26,8 +26,8 @@ public class TargetArrow : MonoBehaviour
         angle = Vector3.Angle(Vector3.right, Vector3.left);
         Debug.Log("right-->back = " + angle);
 
-
-        On(new Vector3(0f,0f,-10f),null);
+        Skill testSkill = new Skill();
+        On(new Vector3(0f,0f,-10f),testSkill);
     }
 
     void Update()
