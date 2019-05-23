@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleMapManager {
+public class BattleMapManager:MonoBehaviour {
 
     private static BattleMapManager _instance;
     public static BattleMapManager Instance{
@@ -13,24 +13,52 @@ public class BattleMapManager {
         }
     }
 
-
     private BattleGrid[][] mapGrids;
     private BattleGrid standingGrid;
     private BattleGrid targetGrid;
+    private bool isExist = false;
+
+    private BattleMapView mapView;
+
+    void Start(){
+        mapView = this.GetComponent<BattleMapView>();
+    }
 
 
-    void InitBattleMap(){
-        mapGrids = new BattleGrid[20][];
-        for (int i = 0; i < mapGrids.Length;i++){
-            mapGrids[i] = new BattleGrid[10];
-            for (int j = 0; j < mapGrids[i].Length;j++){
-                mapGrids[i][j] = new BattleGrid(i,j);
+    public void InitBattleMap(){
+        if (!isExist)
+        {
+            mapGrids = new BattleGrid[20][];
+            for (int i = 0; i < mapGrids.Length; i++)
+            {
+                mapGrids[i] = new BattleGrid[10];
+                for (int j = 0; j < mapGrids[i].Length; j++)
+                {
+                    mapGrids[i][j] = new BattleGrid(i, j);
+                }
             }
+            isExist = true;
         }
-
         standingGrid = mapGrids[0][0];
         targetGrid = mapGrids[0][0];
     }
+
+    /// <summary>
+    /// 单位移动到某位置，返回目标位置坐标
+    /// </summary>
+    /// <returns>The move to.</returns>
+    public Vector2 UnitMoveTo(Vector2Int start, Vector2Int end)
+    {
+        mapGrids[start.x][start.y].Occupied = false;
+        mapGrids[end.x][end.y].Occupied = true;
+        return mapView.GetCellPosition(end.x, end.y);
+    }
+
+    public Vector2 UnitsIntoBattle(Vector2Int standingPoint){
+        mapGrids[standingPoint.x][standingPoint.y].Occupied = true;
+        return mapView.GetCellPosition(standingPoint.x, standingPoint.y);
+    }
+
 
     /// <summary>
     /// 获得目标点某方向上相邻的格子

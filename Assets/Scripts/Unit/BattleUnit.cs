@@ -28,8 +28,11 @@ public class BattleUnit
     public int DamageToManaShiled = 0;
     public bool Crippled;
 
-    public BattleUnit(BattleUnitView _view){
-        View = _view;
+    public Vector2Int Position;
+
+    public BattleUnit(string name,BattleUnitView view){
+        Name = name;
+        View = view;
     }
 
     public int Heal(int value)

@@ -6,12 +6,14 @@ public class BattleGrid
 {
     public Vector2Int Position;
     public bool Walkable;
+    public bool Occupied;
     public int SelectedCount;//被多少角色占用了选中状态
 
     public BattleGrid(Vector2Int _pos)
     {
         Position = _pos;
         Walkable = true;
+        Occupied = false;
     }
 
     public BattleGrid(int xCount,int yCount){

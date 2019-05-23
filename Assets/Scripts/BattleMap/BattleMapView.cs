@@ -60,7 +60,7 @@ public class BattleMapView : MonoBehaviour {
         return o;
     }
 
-    Vector2 GetCellPosition(int xCount, int yCount)
+    public Vector2 GetCellPosition(int xCount, int yCount)
     {
         float x = offset.x + (xCount - 1) * cellWidth;
         float y = offset.y - (yCount - 1) * cellHeight;
