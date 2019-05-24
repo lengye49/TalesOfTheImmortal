@@ -4,6 +4,7 @@ using System.Collections;
 public class BattleUnit 
 {
     public string Name;
+    public UnitSide Side;
     public BattleUnitView View;
 
     public int HP;
@@ -29,9 +30,15 @@ public class BattleUnit
     public bool Crippled;
 
     public Vector2Int Position;
+    public float SingTime = 0;
+    public float CD = 0;
+    public float WaitingTime{
+        get { return CD + SingTime; }
+    }
 
-    public BattleUnit(string name,BattleUnitView view){
+    public BattleUnit(string name,UnitSide side, BattleUnitView view){
         Name = name;
+        Side = side;
         View = view;
     }
 
@@ -65,6 +72,9 @@ public class BattleUnit
         //View.UpdateMp(MP);
         return v;
     }
+}
 
-
+public enum UnitSide{
+    Ally,
+    Enemy
 }

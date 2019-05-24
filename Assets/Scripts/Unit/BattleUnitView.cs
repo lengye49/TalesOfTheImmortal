@@ -9,7 +9,8 @@ public class BattleUnitView : MonoBehaviour
 
     void Start()
     {
-
+        hpSlider = GetComponentInChildren<Slider>();
+        avatar = GetComponent<Image>();
     }
 
     public void Init(){
