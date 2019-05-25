@@ -88,8 +88,19 @@ public class BattleManager : MonoBehaviour
         StartRound(_unit);
     }
 
-    void StartRound(BattleUnit unit){
-
+    void StartRound(BattleUnit unit)
+    {
+        if (unit.Side == UnitSide.Ally)
+        {
+            /*
+             * 1. 通知UI，切换成该角色技能
+             * 2. (1)自动战斗、进入AI逻辑，（2）手动战斗，通知BattleMapView，切换该角色状态
+            */
+        }
+        else
+        {
+            /*进入AI逻辑*/
+        }
     }
 
     //**************
@@ -129,7 +140,7 @@ public class BattleManager : MonoBehaviour
 
 
     //**************
-    //结果判定
+    //结果判定，如果战斗没结束，则进入下一回合
     //**************
     void CheckIsBattleEnd(){
         int unitNum = 0;
@@ -158,6 +169,18 @@ public class BattleManager : MonoBehaviour
     void FinishBattle(bool playerWin){
         Debug.Log("BattleResult : " + (playerWin ? "Win" : "Lose"));
         TestStartBattleBtn.SetActive(true);
+    }
+
+    //**************
+    //自动行动
+    //**************
+    void AIRound(BattleUnit unit){
+        //1. Move
+
+        //2. Attack
+
+        //3.NextRound
+        CheckIsBattleEnd();
     }
 
 }

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class BattleUnit 
 {
@@ -28,6 +28,8 @@ public class BattleUnit
     public int Rebound = 0;//反伤
     public int DamageToManaShiled = 0;
     public bool Crippled;
+
+    public List<Skill> Skills;
 
     public Vector2Int Position;
     public float SingTime = 0;

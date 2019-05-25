@@ -6,6 +6,7 @@ public class Skill
     public int Id;
     public string Name;
     public string Description;
+    public string Image;
     public SkillRangeType RangeType;
     public int Range;
     public SkillEffectType EffectType;
@@ -14,6 +15,7 @@ public class Skill
     public Skill(){
         Id = 1;
         Name = "Test Skill";
+        Image = "LinerSword";
         Description = "This is a Linear Skill";
         RangeType = SkillRangeType.Line;
         Range = 2;
