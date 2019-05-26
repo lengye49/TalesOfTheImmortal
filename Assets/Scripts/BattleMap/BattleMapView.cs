@@ -25,10 +25,9 @@ public class BattleMapView : MonoBehaviour {
         walkable = Resources.Load("BattleMap/walkable", typeof(Sprite)) as Sprite;
         selecting = Resources.Load("BattleMap/selecting", typeof(Sprite)) as Sprite;
         targeting = Resources.Load("BattleMap/targeting", typeof(Sprite)) as Sprite;
-        InitBattleMapView();
     }
 
-    void InitBattleMapView(){
+    public void InitBattleMapView(){
         cellList = new GameObject[20][];
         for (int i = 0; i < 20;i++){
             cellList[i] = new GameObject[10];
@@ -67,5 +66,29 @@ public class BattleMapView : MonoBehaviour {
         if (xCount % 2 == 1)
             y -= 0.5f * cellHeight;
         return new Vector2(x, y);
+    }
+
+    /// <summary>
+    /// 设置进场时各角色站位状态
+    /// </summary>
+    public void SetEnterBattleState(List<BattleGrid> cells){
+        for (int i = 0; i < cells.Count;i++){
+            //GetCellImageByBattleUnit(cells[i]).sprite = standard;
+        }
+    }
+
+    /// <summary>
+    /// 设置进入回合行走时格子的状态
+    /// </summary>
+    public void SetWalkingState(BattleGrid standingPoint,List<BattleGrid> walkableRange){
+        for (int i = 0; i < walkableRange.Count;i++){
+            if (!walkableRange[i].Occupied)
+                GetCellImageByBattleUnit(walkableRange[i]).sprite = walkable;
+        }
+        GetCellImageByBattleUnit(standingPoint).sprite = standard;
+    }
+
+    Image GetCellImageByBattleUnit(BattleGrid unit){
+        return cellList[unit.Position.x][unit.Position.y].GetComponent<Image>();
     }
 }

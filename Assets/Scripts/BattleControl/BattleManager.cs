@@ -19,8 +19,17 @@ public class BattleManager : MonoBehaviour
 
     private List<BattleUnit> AllyList;
     private List<BattleUnit> EnemyList;
+    private BattleView battleView;
+
 
     public GameObject TestStartBattleBtn;
+    private GameObject unitPrefab;
+
+    private void Start()
+    {
+        battleView = this.GetComponent<BattleView>();
+        unitPrefab = Resources.Load("Prefabs/BattleUnit", typeof(GameObject)) as GameObject;
+    }
 
     //**************
     /*
@@ -61,7 +70,7 @@ public class BattleManager : MonoBehaviour
 
     BattleUnit SetBattleUnit(string unitName,UnitSide side, Vector2Int pos)
     {
-        GameObject unitView = Resources.Load("Prefab/BattleUnitView", typeof(GameObject)) as GameObject;
+        GameObject unitView = Instantiate(unitPrefab) as GameObject;
         unitView.transform.SetParent(transform);
         BattleUnit unit = new BattleUnit(unitName,side, unitView.GetComponent<BattleUnitView>());
         Vector2 realPos = BattleMapManager.Instance.UnitsIntoBattle(pos);
@@ -90,12 +99,15 @@ public class BattleManager : MonoBehaviour
 
     void StartRound(BattleUnit unit)
     {
+        //切换UI状态
+        battleView.StartTurn(unit);
+
         if (unit.Side == UnitSide.Ally)
         {
             /*
-             * 1. 通知UI，切换成该角色技能
-             * 2. (1)自动战斗、进入AI逻辑，（2）手动战斗，通知BattleMapView，切换该角色状态
+             *  (1)自动战斗、进入AI逻辑，（2）手动战斗，通知BattleMapView，切换该角色状态
             */
+
         }
         else
         {
@@ -110,6 +122,8 @@ public class BattleManager : MonoBehaviour
         //Vector2 newPos = BattleMapManager.Instance.UnitMoveTo(start,end);
         //unit.View.MoveTo(newPos);
     }
+
+
 
     //**************
     //选择目标

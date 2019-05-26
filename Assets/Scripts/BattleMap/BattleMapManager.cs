@@ -16,6 +16,10 @@ public class BattleMapManager:MonoBehaviour {
     private BattleGrid[][] mapGrids;
     private BattleGrid standingGrid;
     private BattleGrid targetGrid;
+    private List<BattleGrid> walkableRange;
+    private List<BattleGrid> enemyGrids;
+    private List<BattleGrid> allyGrids;
+
     private bool isExist = false;
 
     private BattleMapView mapView;
@@ -25,6 +29,10 @@ public class BattleMapManager:MonoBehaviour {
     }
 
 
+
+    //**************
+    //初始化地图
+    //**************
     public void InitBattleMap(){
         if (!isExist)
         {
@@ -41,7 +49,12 @@ public class BattleMapManager:MonoBehaviour {
         }
         standingGrid = mapGrids[0][0];
         targetGrid = mapGrids[0][0];
+        mapView.InitBattleMapView();
     }
+
+    //**************
+    //角色移动、入场
+    //**************
 
     /// <summary>
     /// 单位移动到某位置，返回目标位置坐标
@@ -59,6 +72,26 @@ public class BattleMapManager:MonoBehaviour {
         return mapView.GetCellPosition(standingPoint.x, standingPoint.y);
     }
 
+
+    ///**************
+    //角色进入回合后的可行走状态
+    ///**************
+    public void StartRound(BattleUnit unit){
+        standingGrid = mapGrids[unit.Position.x][unit.Position.y];
+        walkableRange = CircleTargets(unit.Steps);
+        mapView.SetWalkingState(standingGrid, walkableRange);
+    }
+
+    /// <summary>
+    /// 找到最近的目标
+    /// </summary>
+    BattleGrid GetNearestEnemy(){
+        return new BattleGrid(0,0);
+    }
+
+    ///**************
+    //选择目标
+    ///**************
 
     /// <summary>
     /// 获得目标点某方向上相邻的格子

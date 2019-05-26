@@ -31,6 +31,7 @@ public class BattleUnit
 
     public List<Skill> Skills;
 
+    public int Steps;
     public Vector2Int Position;
     public float SingTime = 0;
     public float CD = 0;
