@@ -47,8 +47,8 @@ public class BattleMapManager:MonoBehaviour {
             }
             isExist = true;
         }
-        standingGrid = mapGrids[0][0];
-        targetGrid = mapGrids[0][0];
+        //standingGrid = mapGrids[0][0];
+        //targetGrid = mapGrids[0][0];
         mapView.InitBattleMapView();
     }
 
@@ -78,7 +78,9 @@ public class BattleMapManager:MonoBehaviour {
     ///**************
     public void StartRound(BattleUnit unit){
         standingGrid = mapGrids[unit.Position.x][unit.Position.y];
+        targetGrid = standingGrid;
         walkableRange = CircleTargets(unit.Steps);
+        Debug.Log("walkableRange.Count = " + walkableRange.Count);
         mapView.SetWalkingState(standingGrid, walkableRange);
     }
 
@@ -154,7 +156,7 @@ public class BattleMapManager:MonoBehaviour {
 
         List<BattleGrid> surroundings = new List<BattleGrid>();
         List<BattleGrid> temp = new List<BattleGrid>();
-        surroundings.Add(targetGrid);
+        temp.Add(targetGrid);
 
         List<GridDirection> directions = GetFanDirections(direction);
 
@@ -185,25 +187,30 @@ public class BattleMapManager:MonoBehaviour {
     /// </summary>
     public List<BattleGrid> CircleTargets(int count=1)
     {
+        Debug.Log("Finding Circle Targets with range = " + count + ", Target position = " + targetGrid.Position);
         List<BattleGrid> grids = new List<BattleGrid>();
         grids.Add(targetGrid);
 
         List<BattleGrid> surroundings = new List<BattleGrid>();
         List<BattleGrid> temp = new List<BattleGrid>();
-        surroundings.Add(targetGrid);
+        temp.Add(targetGrid);
 
+        Debug.Log("↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓Processing↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓");
         for (int i = 0; i < count;i++){
             surroundings = temp;
             temp = new List<BattleGrid>();
             foreach(BattleGrid battleGrid in surroundings)
             {
+                Debug.Log("Handling " + battleGrid.Position);
                 List<BattleGrid> neighbours = GetNeighbour(battleGrid);
                 foreach(BattleGrid neighbour in neighbours){
                     if (neighbour == null)
                         continue;
+                    Debug.Log("New neighbout + " + neighbour.Position);
                     if(!grids.Contains(neighbour)){
                         grids.Add(neighbour);
                         temp.Add(neighbour);
+                        Debug.Log("Add New Neighbour " + neighbour.Position);
                     }
                 }
             }

@@ -66,13 +66,15 @@ public class BattleManager : MonoBehaviour
 
         BattleUnit enemy = SetBattleUnit("enemy",UnitSide.Enemy, new Vector2Int(3,8));
         EnemyList.Add(enemy);
+
+        CheckRound();
     }
 
     BattleUnit SetBattleUnit(string unitName,UnitSide side, Vector2Int pos)
     {
         GameObject unitView = Instantiate(unitPrefab) as GameObject;
         unitView.transform.SetParent(transform);
-        BattleUnit unit = new BattleUnit(unitName,side, unitView.GetComponent<BattleUnitView>());
+        BattleUnit unit = new BattleUnit(unitName,side, unitView.GetComponent<BattleUnitView>(),pos);
         Vector2 realPos = BattleMapManager.Instance.UnitsIntoBattle(pos);
         unit.View.SetPos(realPos);
         return unit;
@@ -83,6 +85,7 @@ public class BattleManager : MonoBehaviour
     //回合判定
     //**************
     void CheckRound(){
+        Debug.Log("Checking Round");
         BattleUnit _unit = AllyList[0];
         for (int i = 0; i < AllyList.Count; i++)
         {
@@ -99,6 +102,7 @@ public class BattleManager : MonoBehaviour
 
     void StartRound(BattleUnit unit)
     {
+        Debug.Log("Starting Round "+unit.Side.ToString());
         //切换UI状态
         battleView.StartTurn(unit);
 
@@ -107,7 +111,7 @@ public class BattleManager : MonoBehaviour
             /*
              *  (1)自动战斗、进入AI逻辑，（2）手动战斗，通知BattleMapView，切换该角色状态
             */
-
+            BattleMapManager.Instance.StartRound(unit);
         }
         else
         {

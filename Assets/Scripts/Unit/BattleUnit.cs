@@ -39,10 +39,12 @@ public class BattleUnit
         get { return CD + SingTime; }
     }
 
-    public BattleUnit(string name,UnitSide side, BattleUnitView view){
+    public BattleUnit(string name,UnitSide side, BattleUnitView view,Vector2Int pos){
         Name = name;
         Side = side;
         View = view;
+        Steps = 3;
+        Position = pos;
     }
 
     public int Heal(int value)

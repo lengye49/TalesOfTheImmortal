@@ -45,16 +45,16 @@ public class BattleMapView : MonoBehaviour {
         o.transform.localScale = Vector2.one;
         o.transform.localPosition = GetCellPosition(xCount, yCount);
         o.GetComponent<BattleCell>().ResetState();
-
+        o.transform.GetComponent<Image>().sprite = standard;
         //test code:
-        if (xCount < 5)
-            o.transform.GetComponent<Image>().sprite = walkable;
-        else if(xCount<7)
-            o.transform.GetComponent<Image>().sprite = targeting;
-        else if(xCount<9)
-            o.transform.GetComponent<Image>().sprite = selecting;
-        else
-            o.transform.GetComponent<Image>().sprite = standard;
+        //if (xCount < 5)
+        //    o.transform.GetComponent<Image>().sprite = walkable;
+        //else if(xCount<7)
+        //    o.transform.GetComponent<Image>().sprite = targeting;
+        //else if(xCount<9)
+        //    o.transform.GetComponent<Image>().sprite = selecting;
+        //else
+        //    o.transform.GetComponent<Image>().sprite = standard;
 
         return o;
     }
@@ -81,6 +81,7 @@ public class BattleMapView : MonoBehaviour {
     /// 设置进入回合行走时格子的状态
     /// </summary>
     public void SetWalkingState(BattleGrid standingPoint,List<BattleGrid> walkableRange){
+        Debug.Log("Set Walking State");
         for (int i = 0; i < walkableRange.Count;i++){
             if (!walkableRange[i].Occupied)
                 GetCellImageByBattleUnit(walkableRange[i]).sprite = walkable;
