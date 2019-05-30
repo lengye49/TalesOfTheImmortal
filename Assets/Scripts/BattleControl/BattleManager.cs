@@ -20,7 +20,7 @@ public class BattleManager : MonoBehaviour
     private List<BattleUnit> AllyList;
     private List<BattleUnit> EnemyList;
     private BattleView battleView;
-
+    private BattleState battleState;
 
     public GameObject TestStartBattleBtn;
     private GameObject unitPrefab;
@@ -67,6 +67,8 @@ public class BattleManager : MonoBehaviour
         BattleUnit enemy = SetBattleUnit("enemy",UnitSide.Enemy, new Vector2Int(3,8));
         EnemyList.Add(enemy);
 
+        battleState = BattleState.Waiting;
+
         CheckRound();
     }
 
@@ -106,11 +108,13 @@ public class BattleManager : MonoBehaviour
         //切换UI状态
         battleView.StartTurn(unit);
 
+        //Todo下面的代码需要区分自动战斗还是手动战斗
         if (unit.Side == UnitSide.Ally)
         {
             /*
              *  (1)自动战斗、进入AI逻辑，（2）手动战斗，通知BattleMapView，切换该角色状态
             */
+            battleState = BattleState.Walking;
             BattleMapManager.Instance.StartRound(unit);
         }
         else
@@ -201,4 +205,21 @@ public class BattleManager : MonoBehaviour
         CheckIsBattleEnd();
     }
 
+
+    public void ClickCellRespond(){
+        if(battleState==BattleState.Walking){
+            Debug.Log("Moveing to ");
+        }else if(battleState==BattleState.SelectingTarget){
+            Debug.Log("Targeting to ");
+        }else{
+            Debug.Log("State Error");
+        }
+    }
+
+}
+
+public enum BattleState{
+    Waiting,
+    Walking,
+    SelectingTarget
 }
