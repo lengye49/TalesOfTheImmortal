@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class TargetArrow : MonoBehaviour
 {
     private bool isOn = false;
+    private GridDirection lastDirection = GridDirection.None;
 
     Vector2 attackerPosition;
     Vector2 mousePosition;
@@ -12,7 +13,7 @@ public class TargetArrow : MonoBehaviour
     Vector2 standardVector;
 
     Dictionary<GridDirection, List<BattleGrid>> targetGridList;
-    List<BattleGrid> targetGrids;
+    public List<BattleGrid> targetGrids;
 
     Skill skillCasting;
 
@@ -30,8 +31,12 @@ public class TargetArrow : MonoBehaviour
             float angle = Vector3.Angle(Vector3.right, mouseVector);
             bool above = mousePosition.y > standardVector.y;
             GridDirection direction = GetPointingDirection(angle, above);
-            SetTargetGrids(direction);
-            Debug.Log(direction.ToString());
+            if (direction != lastDirection)
+            {
+                lastDirection = direction;
+                SetTargetGrids(direction);
+                Debug.Log(direction.ToString());
+            }
         }
     }
 
@@ -58,22 +63,28 @@ public class TargetArrow : MonoBehaviour
         if (targetGridList.ContainsKey(direction))
         {
             targetGrids = targetGridList[direction];
-            return;
         }
-        switch(skillCasting.RangeType){
-            case SkillRangeType.Line:
-                targetGrids = BattleMapManager.Instance.LineTargets(direction, skillCasting.Range);
-                break;
-            case SkillRangeType.Fan:
-                targetGrids = BattleMapManager.Instance.FanTargets(direction, skillCasting.Range);
-                break;
-            case SkillRangeType.Circle:
-                targetGrids = BattleMapManager.Instance.CircleTargets(skillCasting.Range);
-                break;
-            default:
-                break;
+        else
+        {
+            switch (skillCasting.RangeType)
+            {
+                case SkillRangeType.Line:
+                    targetGrids = BattleMapManager.Instance.LineTargets(direction, skillCasting.Range);
+                    break;
+                case SkillRangeType.Fan:
+                    targetGrids = BattleMapManager.Instance.FanTargets(direction, skillCasting.Range);
+                    break;
+                case SkillRangeType.Circle:
+                    targetGrids = BattleMapManager.Instance.CircleTargets(skillCasting.Range);
+                    break;
+                default:
+                    break;
+            }
+            targetGridList.Add(direction, targetGrids);
         }
-        targetGridList.Add(direction, targetGrids);
+
+        BattleMapManager.Instance.MapView.ResetState();
+        BattleMapManager.Instance.SelectingTarget(targetGrids);
     }
 
 
@@ -98,7 +109,7 @@ public class TargetArrow : MonoBehaviour
         isOn = false;
 
         targetGridList = null;
-        targetGrids = null;
+        //targetGrids = null;
     }
 
 }

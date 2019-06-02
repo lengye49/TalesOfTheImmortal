@@ -18,7 +18,7 @@ public class Skill
         Image = "LinerSword";
         Description = "This is a Linear Skill";
         RangeType = SkillRangeType.Line;
-        Range = 2;
+        Range = 5;
         EffectType = SkillEffectType.PhysicalDamage;
         Power = 10000;
     }

@@ -26,8 +26,8 @@ public class BattleMapManager:MonoBehaviour {
 
     void Start(){
         MapView = this.GetComponent<BattleMapView>();
-    }
 
+    }
 
 
     //**************
@@ -64,6 +64,7 @@ public class BattleMapManager:MonoBehaviour {
     {
         mapGrids[start.x][start.y].Occupied = false;
         mapGrids[end.x][end.y].Occupied = true;
+        standingGrid = mapGrids[end.x][end.y];
         return MapView.GetCellPosition(end.x, end.y);
     }
 
@@ -92,8 +93,16 @@ public class BattleMapManager:MonoBehaviour {
     }
 
     ///**************
-    //选择目标
+    //角色进入选择目标状态
     ///**************
+    public void SelectingTarget(List<BattleGrid> battleGrids){
+        MapView.ResetState();
+        MapView.SetSelectingState(standingGrid, battleGrids);
+    }
+
+    public BattleGrid GetBattleGridByPos(Vector2Int pos){
+        return mapGrids[pos.x][pos.y];
+    }
 
     /// <summary>
     /// 获得目标点某方向上相邻的格子
@@ -124,7 +133,7 @@ public class BattleMapManager:MonoBehaviour {
                 pos = Vector2Int.zero;
                 break;
         }
-        if (pos.x >= 0 && pos.y >= 0)
+        if (pos.x >= 0 && pos.y >= 0 && pos.x<mapGrids.Length && pos.y<mapGrids[0].Length)
             return new BattleGrid(pos.x, pos.y);
         else
             return null;
@@ -135,14 +144,20 @@ public class BattleMapManager:MonoBehaviour {
     /// </summary>
     public List<BattleGrid> LineTargets(GridDirection direction, int count = 1)
     {
+        string str = "Standing on " + standingGrid.Position;
         List<BattleGrid> grids = new List<BattleGrid>();
         BattleGrid lastGrid = standingGrid;
         for (int i = 0; i < count; i++)
         {
             BattleGrid nextGrid = GetGridByDirection(lastGrid, direction);
-            grids.Add(nextGrid);
-            lastGrid = nextGrid;
+            if (nextGrid != null)
+            {
+                grids.Add(nextGrid);
+                str += "," + nextGrid.Position;
+                lastGrid = nextGrid;
+            }
         }
+        Debug.Log(str);
         return grids;
     }
 

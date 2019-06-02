@@ -24,6 +24,8 @@ public class BattleManager : MonoBehaviour
     private TargetArrow arrow;
 
     private BattleUnit actingUnit;
+    private Skill actingSkill;
+
     private bool aiPerforming = false;
 
     public GameObject TestStartBattleBtn;
@@ -130,14 +132,12 @@ public class BattleManager : MonoBehaviour
         Vector2 newPos = BattleMapManager.Instance.UnitMoveTo(actingUnit.Position,targetPos);
         actingUnit.View.MoveTo(newPos);
         actingUnit.Position = targetPos;
-        FinishMoving();
-    }
 
-    void FinishMoving(){
         if (!aiPerforming)
             BattleMapManager.Instance.MapView.ResetState();
         SelectingTarget();
     }
+
 
 
     //**************
@@ -145,17 +145,53 @@ public class BattleManager : MonoBehaviour
     //**************
     void SelectingTarget(int skillIndex=0){
         battleState = BattleState.SelectingTarget;
-        Skill skill = actingUnit.Skills[skillIndex];
+        actingSkill = actingUnit.Skills[skillIndex];
         Vector3 pos = actingUnit.View.gameObject.transform.position;
-        arrow.On(pos, skill);
+        arrow.On(pos, actingSkill);
     }
 
+    void ConfirmingTarget(){
+        Debug.Log("Releasing Skill " + actingUnit.Name + "," + actingSkill.Description);
+        arrow.Off();
+        BattleMapManager.Instance.MapView.ResetState();
+        //Todo 释放技能特效
+        List<BattleUnit> targets = GetTargets(arrow.targetGrids);
+        Debug.Log(targets.Count + " targets found!");
+        for (int i = 0; i < targets.Count;i++){
+            CastSkill(actingUnit, targets[i], actingSkill);
+        }
+    }
+
+    List<BattleUnit> GetTargets(List<BattleGrid> targetGrids){
+        //TestCode
+        string str = "";
+        for (int i = 0; i < targetGrids.Count; i++)
+            str += targetGrids[i].Position;
+        Debug.Log("targetGrids = " + str);
+
+        List<BattleUnit> targets = new List<BattleUnit>();
+        BattleGrid battleGrid;
+        for (int i = 0; i < AllyList.Count;i++){
+            battleGrid = BattleMapManager.Instance.GetBattleGridByPos(AllyList[i].Position);
+            Debug.Log(AllyList[i].Name + " position = " + AllyList[i].Position);
+            if (targetGrids.Contains(battleGrid))
+                targets.Add(AllyList[i]);
+        }
+        for (int i = 0; i < EnemyList.Count;i++){
+            battleGrid = BattleMapManager.Instance.GetBattleGridByPos(EnemyList[i].Position);
+            Debug.Log(EnemyList[i].Name + " position = " + EnemyList[i].Position);
+            if (targetGrids.Contains(battleGrid))
+                targets.Add(EnemyList[i]);
+        }
+        return targets;
+    }
 
     //**************
     //释放技能
     //**************
     //Todo 多个目标
     public void CastSkill(BattleUnit attacker,BattleUnit target,Skill skill){
+        Debug.Log("Casting Skill to " + target.Name);
         if (skill == null)
             return;
         SkillEffectHandler handler = new SkillEffectHandler();
@@ -223,7 +259,8 @@ public class BattleManager : MonoBehaviour
             Debug.Log("Moveing to ");
             UnitMove(targetPos);
         }else if(battleState==BattleState.SelectingTarget){
-            Debug.Log("Targeting to ");
+            Debug.Log("Confirming Target");
+            ConfirmingTarget();
         }else{
             Debug.Log("State Error");
         }

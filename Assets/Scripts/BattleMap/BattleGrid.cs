@@ -9,6 +9,23 @@ public class BattleGrid
 
     //public bool Walkable{ get { return !Occupied; }}
 
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+
+        if (ReferenceEquals(this, obj)) return true;
+
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals(obj);
+    }
+
+    public bool Equals(BattleGrid other){
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        if (this.Position != other.Position) return false;
+        return true;
+    }
+
     public BattleGrid(Vector2Int _pos)
     {
         Position = _pos;
@@ -75,6 +92,7 @@ public enum GridDirection{
     RightUp,
     RightDown,
     Up,
-    Down
+    Down,
+    None
 }
 

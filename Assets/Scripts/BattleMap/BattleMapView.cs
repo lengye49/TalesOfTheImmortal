@@ -49,6 +49,7 @@ public class BattleMapView : MonoBehaviour {
         //o.GetComponent<BattleCell>().ResetState();
         o.transform.GetComponent<Image>().sprite = standard;
         o.name = xCount + "|" + yCount;
+        o.GetComponentInChildren<Text>().text = o.name;
         return o;
     }
 
@@ -84,7 +85,11 @@ public class BattleMapView : MonoBehaviour {
     }
 
     public void SetSelectingState(BattleGrid standingPoint,List<BattleGrid> selectingRange){
-
+        //Debug.Log("Set Targeting State");
+        temp = selectingRange;
+        for (int i = 0; i < selectingRange.Count;i++){
+            GetCellImageByBattleUnit(selectingRange[i]).sprite = selecting;
+        }
     }
 
     public void ResetState(){
@@ -94,6 +99,7 @@ public class BattleMapView : MonoBehaviour {
     }
 
     Image GetCellImageByBattleUnit(BattleGrid unit){
+        //Debug.Log("Geting Unit Image by Position = " + unit.Position);
         return cellList[unit.Position.x][unit.Position.y].GetComponent<Image>();
     }
 }
