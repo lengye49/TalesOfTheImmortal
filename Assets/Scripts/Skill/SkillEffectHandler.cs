@@ -41,6 +41,7 @@ public class SkillEffectHandler
         if (value > 0)
             target.Damage(value);
 
+        Debug.Log("PhysicalDamage" + value);
         return value;
     }
 

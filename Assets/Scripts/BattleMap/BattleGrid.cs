@@ -7,24 +7,31 @@ public class BattleGrid
     public Vector2Int Position;
     public bool Occupied;
 
-    //public bool Walkable{ get { return !Occupied; }}
+    public bool Walkable{ get { return !Occupied; }}
 
-    public override bool Equals(object obj)
-    {
-        if (ReferenceEquals(null, obj)) return false;
+    //public override bool Equals(object obj)
+    //{
+    //    if (ReferenceEquals(null, obj)) return false;
 
-        if (ReferenceEquals(this, obj)) return true;
+    //    if (ReferenceEquals(this, obj)) return true;
 
-        if (obj.GetType() != this.GetType()) return false;
-        return Equals(obj);
-    }
+    //    if (obj.GetType() != this.GetType()) return false;
 
-    public bool Equals(BattleGrid other){
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
-        if (this.Position != other.Position) return false;
-        return true;
-    }
+
+    //    return Equals(obj);
+    //}
+
+    //public bool Equals(BattleGrid other){
+    //    if (ReferenceEquals(null, other)) return false;
+    //    if (ReferenceEquals(this, other)) return true;
+    //    if (this.Position != other.Position) return false;
+    //    return true;
+    //}
+
+    //public override int GetHashCode()
+    //{
+    //    return base.GetHashCode();
+    //}
 
     public BattleGrid(Vector2Int _pos)
     {

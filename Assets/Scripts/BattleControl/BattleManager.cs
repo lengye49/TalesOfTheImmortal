@@ -36,6 +36,7 @@ public class BattleManager : MonoBehaviour
         battleView = this.GetComponent<BattleView>();
         arrow = GetComponent<TargetArrow>();
         unitPrefab = Resources.Load("Prefabs/BattleUnit", typeof(GameObject)) as GameObject;
+        //StartBattle();
     }
 
     //**************
@@ -174,14 +175,19 @@ public class BattleManager : MonoBehaviour
         for (int i = 0; i < AllyList.Count;i++){
             battleGrid = BattleMapManager.Instance.GetBattleGridByPos(AllyList[i].Position);
             Debug.Log(AllyList[i].Name + " position = " + AllyList[i].Position);
-            if (targetGrids.Contains(battleGrid))
-                targets.Add(AllyList[i]);
+            for (int j = 0; j < targetGrids.Count;j++){
+                if(targetGrids[j].Position==AllyList[i].Position)
+                    targets.Add(AllyList[i]);
+            }
         }
         for (int i = 0; i < EnemyList.Count;i++){
             battleGrid = BattleMapManager.Instance.GetBattleGridByPos(EnemyList[i].Position);
             Debug.Log(EnemyList[i].Name + " position = " + EnemyList[i].Position);
-            if (targetGrids.Contains(battleGrid))
-                targets.Add(EnemyList[i]);
+            for (int j = 0; j < targetGrids.Count; j++)
+            {
+                if (targetGrids[j].Position == EnemyList[i].Position)
+                    targets.Add(EnemyList[i]);
+            }
         }
         return targets;
     }
@@ -203,7 +209,7 @@ public class BattleManager : MonoBehaviour
             Debug.Log("Can not find method: " + methodName);
             return;
         }
-        object[] parameters = new object[] { attacker, skill.Power, target };
+        object[] parameters = new object[] { attacker, skill.Power.ToString(), target };
         int result = (int)method.Invoke(handler, parameters);
         Debug.Log(skill.Name + " released, effect--> " + methodName + ", result--> " + result);
     }
