@@ -6,11 +6,10 @@ public class TargetArrow : MonoBehaviour
 {
     private bool isOn = false;
 
-    Vector3 attackerPosition;
-    Vector3 mouseScreenPosition;
-    Vector3 mouseWorldPosition;
-    Vector3 mouseVector;
-    Vector3 standardVector;
+    Vector2 attackerPosition;
+    Vector2 mousePosition;
+    Vector2 mouseVector;
+    Vector2 standardVector;
 
     Dictionary<GridDirection, List<BattleGrid>> targetGridList;
     List<BattleGrid> targetGrids;
@@ -19,27 +18,17 @@ public class TargetArrow : MonoBehaviour
 
     void Start()
     {
-        float angle = Vector3.Angle(Vector3.right, Vector3.up);
-        Debug.Log("right-->up = " + angle);
-        angle = Vector3.Angle(Vector3.right, Vector3.down);
-        Debug.Log("right-->down = " + angle);
-        angle = Vector3.Angle(Vector3.right, Vector3.left);
-        Debug.Log("right-->back = " + angle);
 
-        Skill testSkill = new Skill();
-        On(new Vector3(0f,0f,-10f),testSkill);
     }
 
     void Update()
     {
         if (isOn)
         {
-            mouseScreenPosition = Input.mousePosition;
-            mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
-            //Debug.Log(mouseWorldPosition);
-            mouseVector = mouseWorldPosition - attackerPosition;
+            mousePosition = Input.mousePosition;
+            mouseVector = mousePosition - attackerPosition;
             float angle = Vector3.Angle(Vector3.right, mouseVector);
-            bool above = mouseWorldPosition.y > standardVector.y;
+            bool above = mousePosition.y > standardVector.y;
             GridDirection direction = GetPointingDirection(angle, above);
             SetTargetGrids(direction);
             Debug.Log(direction.ToString());

@@ -17,6 +17,8 @@ public class BattleMapView : MonoBehaviour {
     private float cellHeight = 120;
     private Vector2 offset = new Vector2(-800, 420);
 
+    private List<BattleGrid> temp;
+
 
     private void Start()
     {
@@ -44,18 +46,9 @@ public class BattleMapView : MonoBehaviour {
         o.transform.SetParent(this.transform);
         o.transform.localScale = Vector2.one;
         o.transform.localPosition = GetCellPosition(xCount, yCount);
-        o.GetComponent<BattleCell>().ResetState();
+        //o.GetComponent<BattleCell>().ResetState();
         o.transform.GetComponent<Image>().sprite = standard;
-        //test code:
-        //if (xCount < 5)
-        //    o.transform.GetComponent<Image>().sprite = walkable;
-        //else if(xCount<7)
-        //    o.transform.GetComponent<Image>().sprite = targeting;
-        //else if(xCount<9)
-        //    o.transform.GetComponent<Image>().sprite = selecting;
-        //else
-        //    o.transform.GetComponent<Image>().sprite = standard;
-
+        o.name = xCount + "|" + yCount;
         return o;
     }
 
@@ -82,11 +75,22 @@ public class BattleMapView : MonoBehaviour {
     /// </summary>
     public void SetWalkingState(BattleGrid standingPoint,List<BattleGrid> walkableRange){
         Debug.Log("Set Walking State");
+        temp = walkableRange;
         for (int i = 0; i < walkableRange.Count;i++){
             if (!walkableRange[i].Occupied)
                 GetCellImageByBattleUnit(walkableRange[i]).sprite = walkable;
         }
         GetCellImageByBattleUnit(standingPoint).sprite = standard;
+    }
+
+    public void SetSelectingState(BattleGrid standingPoint,List<BattleGrid> selectingRange){
+
+    }
+
+    public void ResetState(){
+        for (int i = 0; i < temp.Count;i++){
+            GetCellImageByBattleUnit(temp[i]).sprite = standard;
+        }
     }
 
     Image GetCellImageByBattleUnit(BattleGrid unit){

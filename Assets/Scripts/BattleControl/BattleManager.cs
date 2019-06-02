@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
-    private static BattleMapManager _instance;
-    public static BattleMapManager Instance
+    private static BattleManager _instance;
+    public static BattleManager Instance
     {
         get
         {
             if (_instance == null)
-                _instance = GameObject.Find("BattleMapContainer").GetComponent<BattleMapManager>();
+                _instance = GameObject.Find("BattlePanel").GetComponent<BattleManager>();
             return _instance;
         }
     }
@@ -21,6 +21,10 @@ public class BattleManager : MonoBehaviour
     private List<BattleUnit> EnemyList;
     private BattleView battleView;
     private BattleState battleState;
+    private TargetArrow arrow;
+
+    private BattleUnit actingUnit;
+    private bool aiPerforming = false;
 
     public GameObject TestStartBattleBtn;
     private GameObject unitPrefab;
@@ -28,6 +32,7 @@ public class BattleManager : MonoBehaviour
     private void Start()
     {
         battleView = this.GetComponent<BattleView>();
+        arrow = GetComponent<TargetArrow>();
         unitPrefab = Resources.Load("Prefabs/BattleUnit", typeof(GameObject)) as GameObject;
     }
 
@@ -107,36 +112,43 @@ public class BattleManager : MonoBehaviour
         Debug.Log("Starting Round "+unit.Side.ToString());
         //切换UI状态
         battleView.StartTurn(unit);
+        actingUnit = unit;
 
         //Todo下面的代码需要区分自动战斗还是手动战斗
-        if (unit.Side == UnitSide.Ally)
-        {
-            /*
-             *  (1)自动战斗、进入AI逻辑，（2）手动战斗，通知BattleMapView，切换该角色状态
-            */
+        if(aiPerforming){
+            Debug.Log("Start Ai Running...");
+        }else{
             battleState = BattleState.Walking;
             BattleMapManager.Instance.StartRound(unit);
         }
-        else
-        {
-            /*进入AI逻辑*/
-        }
     }
 
     //**************
-    //Unit移动
+    //Unit移动(手动移动)
     //**************
-    void UnitMove(){
-        //Vector2 newPos = BattleMapManager.Instance.UnitMoveTo(start,end);
-        //unit.View.MoveTo(newPos);
+    void UnitMove(Vector2Int targetPos){
+        Vector2 newPos = BattleMapManager.Instance.UnitMoveTo(actingUnit.Position,targetPos);
+        actingUnit.View.MoveTo(newPos);
+        actingUnit.Position = targetPos;
+        FinishMoving();
     }
 
+    void FinishMoving(){
+        if (!aiPerforming)
+            BattleMapManager.Instance.MapView.ResetState();
+        SelectingTarget();
+    }
 
 
     //**************
     //选择目标
     //**************
-
+    void SelectingTarget(int skillIndex=0){
+        battleState = BattleState.SelectingTarget;
+        Skill skill = actingUnit.Skills[skillIndex];
+        Vector3 pos = actingUnit.View.gameObject.transform.position;
+        arrow.On(pos, skill);
+    }
 
 
     //**************
@@ -206,9 +218,10 @@ public class BattleManager : MonoBehaviour
     }
 
 
-    public void ClickCellRespond(){
+    public void ClickCellRespond(Vector2Int targetPos){
         if(battleState==BattleState.Walking){
             Debug.Log("Moveing to ");
+            UnitMove(targetPos);
         }else if(battleState==BattleState.SelectingTarget){
             Debug.Log("Targeting to ");
         }else{

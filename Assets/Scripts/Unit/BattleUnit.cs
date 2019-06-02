@@ -29,7 +29,7 @@ public class BattleUnit
     public int DamageToManaShiled = 0;
     public bool Crippled;
 
-    public List<Skill> Skills;
+    public List<Skill> Skills = new List<Skill>();
 
     public int Steps;
     public Vector2Int Position;
@@ -45,6 +45,9 @@ public class BattleUnit
         View = view;
         Steps = 3;
         Position = pos;
+
+        Skills = new List<Skill>();
+        Skills.Add(new Skill());
     }
 
     public int Heal(int value)

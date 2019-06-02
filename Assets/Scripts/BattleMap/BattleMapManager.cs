@@ -22,10 +22,10 @@ public class BattleMapManager:MonoBehaviour {
 
     private bool isExist = false;
 
-    private BattleMapView mapView;
+    public BattleMapView MapView;
 
     void Start(){
-        mapView = this.GetComponent<BattleMapView>();
+        MapView = this.GetComponent<BattleMapView>();
     }
 
 
@@ -49,7 +49,7 @@ public class BattleMapManager:MonoBehaviour {
         }
         //standingGrid = mapGrids[0][0];
         //targetGrid = mapGrids[0][0];
-        mapView.InitBattleMapView();
+        MapView.InitBattleMapView();
     }
 
     //**************
@@ -64,12 +64,12 @@ public class BattleMapManager:MonoBehaviour {
     {
         mapGrids[start.x][start.y].Occupied = false;
         mapGrids[end.x][end.y].Occupied = true;
-        return mapView.GetCellPosition(end.x, end.y);
+        return MapView.GetCellPosition(end.x, end.y);
     }
 
     public Vector2 UnitsIntoBattle(Vector2Int standingPoint){
         mapGrids[standingPoint.x][standingPoint.y].Occupied = true;
-        return mapView.GetCellPosition(standingPoint.x, standingPoint.y);
+        return MapView.GetCellPosition(standingPoint.x, standingPoint.y);
     }
 
 
@@ -81,7 +81,7 @@ public class BattleMapManager:MonoBehaviour {
         targetGrid = standingGrid;
         walkableRange = CircleTargets(unit.Steps);
         Debug.Log("walkableRange.Count = " + walkableRange.Count);
-        mapView.SetWalkingState(standingGrid, walkableRange);
+        MapView.SetWalkingState(standingGrid, walkableRange);
     }
 
     /// <summary>
