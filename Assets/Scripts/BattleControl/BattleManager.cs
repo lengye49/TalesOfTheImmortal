@@ -171,18 +171,16 @@ public class BattleManager : MonoBehaviour
         Debug.Log("targetGrids = " + str);
 
         List<BattleUnit> targets = new List<BattleUnit>();
-        BattleGrid battleGrid;
+
         for (int i = 0; i < AllyList.Count;i++){
-            battleGrid = BattleMapManager.Instance.GetBattleGridByPos(AllyList[i].Position);
-            Debug.Log(AllyList[i].Name + " position = " + AllyList[i].Position);
+        //Debug.Log(AllyList[i].Name + " position = " + AllyList[i].Position);
             for (int j = 0; j < targetGrids.Count;j++){
                 if(targetGrids[j].Position==AllyList[i].Position)
                     targets.Add(AllyList[i]);
             }
         }
         for (int i = 0; i < EnemyList.Count;i++){
-            battleGrid = BattleMapManager.Instance.GetBattleGridByPos(EnemyList[i].Position);
-            Debug.Log(EnemyList[i].Name + " position = " + EnemyList[i].Position);
+          //Debug.Log(EnemyList[i].Name + " position = " + EnemyList[i].Position);
             for (int j = 0; j < targetGrids.Count; j++)
             {
                 if (targetGrids[j].Position == EnemyList[i].Position)

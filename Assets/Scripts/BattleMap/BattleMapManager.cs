@@ -216,16 +216,16 @@ public class BattleMapManager:MonoBehaviour {
             temp = new List<BattleGrid>();
             foreach(BattleGrid battleGrid in surroundings)
             {
-                Debug.Log("Handling " + battleGrid.Position);
+                //Debug.Log("Handling " + battleGrid.Position);
                 List<BattleGrid> neighbours = GetNeighbour(battleGrid);
                 foreach(BattleGrid neighbour in neighbours){
                     if (neighbour == null)
                         continue;
-                    Debug.Log("New neighbout + " + neighbour.Position);
+                    //Debug.Log("New neighbout + " + neighbour.Position);
                     if(!grids.Contains(neighbour)){
                         grids.Add(neighbour);
                         temp.Add(neighbour);
-                        Debug.Log("Add New Neighbour " + neighbour.Position);
+                        //Debug.Log("Add New Neighbour " + neighbour.Position);
                     }
                 }
             }

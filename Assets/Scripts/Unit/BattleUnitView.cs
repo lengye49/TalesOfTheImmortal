@@ -7,7 +7,7 @@ public class BattleUnitView : MonoBehaviour
     private Slider hpSlider;
     private Image avatar;
 
-    void Start()
+    void Awake()
     {
         hpSlider = GetComponentInChildren<Slider>();
         avatar = GetComponent<Image>();
@@ -17,6 +17,11 @@ public class BattleUnitView : MonoBehaviour
         hpSlider.value = 1.0f;
 
     }
+
+    public void UpdateHp(float value){
+        hpSlider.value = value;
+    }
+
 
     /// <summary>
     /// 单位移动到某位置

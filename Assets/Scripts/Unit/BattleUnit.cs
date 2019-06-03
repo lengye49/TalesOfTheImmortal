@@ -46,15 +46,36 @@ public class BattleUnit
         Steps = 3;
         Position = pos;
 
+        HP = 100;
+        HpMax = 100;
+        MP = 100;
+        MpMax = 100;
+        Spirit = 100;
+        SpiritMax = 100;
+        Speed = 5;
+        SpeedMax = 5;
+        Attack = 100;
+        Defence = 10;
+        Dodge = 0;
+        Shield = 0;
+        Rebound = 0;
+        DamageToManaShiled = 0;
+        Crippled = false;
+
         Skills = new List<Skill>();
         Skills.Add(new Skill());
+
+        SingTime = 0;
+        CD = 0;
+
+        view.Init();
     }
 
     public int Heal(int value)
     {
         int v = Mathf.Min(value, HpMax - HP);
         HP += v;
-        //View.UpdateHp(HP, HpMax);
+        View.UpdateHp((float)(HP / HpMax));
         return v;
     }
 
@@ -62,7 +83,7 @@ public class BattleUnit
     {
         int v = Mathf.Min(value, HP);
         HP -= v;
-        //View.UpdateHp(HP, HpMax);
+        View.UpdateHp((float)(HP / HpMax));
         return v;
     }
 
