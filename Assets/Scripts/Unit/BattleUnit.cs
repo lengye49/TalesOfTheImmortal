@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class BattleUnit 
 {
     public string Name;
+    public string Image;
     public UnitSide Side;
     public BattleUnitView View;
 
@@ -41,6 +42,7 @@ public class BattleUnit
 
     public BattleUnit(string name,UnitSide side, BattleUnitView view,Vector2Int pos){
         Name = name;
+        Image = "5";
         Side = side;
         View = view;
         Steps = 3;

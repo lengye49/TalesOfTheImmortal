@@ -34,7 +34,7 @@ public class BattleView : MonoBehaviour
         }
     }
 
-    void SetSecondaryWeaponList(){}
+    void SetItemList(){}
 
     void SetSkillInteractive(bool isActive){
         for (int i = 0; i < SkillList.Length;i++){
@@ -42,7 +42,7 @@ public class BattleView : MonoBehaviour
         }
     }
 
-    void SetSecondaryWeaponInteractive(bool isActive){}
+    void SetItemInteractive(bool isActive){}
 
     //**************
     //选择目标

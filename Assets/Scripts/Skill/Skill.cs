@@ -11,6 +11,8 @@ public class Skill
     public int Range;
     public SkillEffectType EffectType;
     public int Power;
+    public float CD;
+    public float CountingDown;//用于计时的CD
 
     public Skill(){
         Id = 1;
@@ -21,6 +23,8 @@ public class Skill
         Range = 5;
         EffectType = SkillEffectType.PhysicalDamage;
         Power = 10000;
+        CD = 5;
+        CountingDown = 0;
     }
 }
 
