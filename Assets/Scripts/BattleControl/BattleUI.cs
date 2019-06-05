@@ -21,13 +21,14 @@ public class BattleUI : MonoBehaviour
     public Transform ItemContainer;
     public Image HeadImage;
 
-
-    private Text hpText;
-    private Text mpText;
-    private List<Button> SkillList;
-    private List<Button> ItemList;
     private GameObject skillPrefab;
     private GameObject itemPrefab;
+    private Text hpText;
+    private Text mpText;
+    private List<GameObject> SkillList;
+    private List<GameObject> ItemList;
+    private List<Image> SkillCovers;
+    private List<Image> ItemCovers;
 
     private void Awake()
     {
@@ -35,49 +36,71 @@ public class BattleUI : MonoBehaviour
         mpText = MpSlider.GetComponentInChildren<Text>();
         skillPrefab = Resources.Load("Prefabs/Skill", typeof(GameObject)) as GameObject;
         itemPrefab = Resources.Load("Prefabs/Item", typeof(GameObject)) as GameObject;
-        SkillList = new List<Button>();
-        ItemList = new List<Button>();
+
+        SkillList = new List<GameObject>();
+        ItemList = new List<GameObject>();
+        SkillCovers = new List<Image>();
+        ItemCovers = new List<Image>();
+
     }
 
     void InitBattleUI(BattleUnit unit){
-        UpdateHeadImage(unit.Image);
+        InitHeadImage(unit.Image);
+
         InitSkills(unit.Skills);
         //Item
         UpdateHp(unit.HP,unit.HpMax);
+        UpdateMp(unit.MP, unit.MpMax);
     }
 
-    void UpdateHeadImage(string path){
+    void InitHeadImage(string path){
         Sprite sprite = Resources.Load("UIAvatar/" + path, typeof(Sprite)) as Sprite;
         HeadImage.sprite = sprite;
     }
 
-    void InitSkills(List<Skill> skills){
-        Button btn;
-        for (int i = 0; i < skills.Count;i++){
+    void InitSkills(List<Skill> _skills){
+        GameObject go;
+        for (int i = 0; i < _skills.Count;i++){
             if(i<SkillList.Count)
             {
-                btn = SkillList[i];
+                go = SkillList[i];
             }else{
-                GameObject go = Instantiate(skillPrefab) as GameObject;
+                go = Instantiate(skillPrefab) as GameObject;
                 go.transform.SetParent(SkillContainer);
                 go.transform.localScale = Vector2.one;
                 go.transform.localPosition = GetCellPosition(i, 0);
-                btn = gameObject.GetComponent<Button>();
             }
-            btn.gameObject.SetActive(true);
-            btn.GetComponent<Image>().sprite = Resources.Load("Skill/" + skills[i].Image, typeof(Sprite)) as Sprite;
-            btn.GetComponentsInChildren<Image>()[1].fillAmount = 0;
+            go.SetActive(true);
+            go.GetComponent<Button>().interactable = true;
+            Image[] images = go.GetComponentsInChildren<Image>();
+            images[0].sprite = Resources.Load("Skill/" + _skills[i].Image, typeof(Sprite)) as Sprite;
+            SkillCovers.Add(images[1]);
+            images[1].fillAmount = 0;
         }
     }
 
-    void InitItems(){}
-
     /// <summary>
-    /// 用于更新技能/物品的CD遮罩
+    /// 更新由于时间变化导致的界面表现。实际运算放在BattleManager里
     /// </summary>
-    private void Update()
-    {
+    /// <param name="_skills">Skills.</param>
+    /// <param name="_items">Items.</param>
+    void UpdateUI(List<Skill> _skills,List<Item> _items){
+        //Skill CD
+        for (int i = 0; i < _skills.Count;i++){
+            if (_skills[i].CountingDown > 0)
+            {
+                SkillCovers[i].fillAmount = GetFillAmount(_skills[i].CD, _skills[i].CountingDown);
+                SkillList[i].GetComponent<Button>().interactable = false;
+            }else{
+                SkillList[i].GetComponent<Button>().interactable = true;
+            }
+        }
+
+        //Item CD
     }
+
+    //void InitItems(){}
+
 
     float GetFillAmount(float CD,float CountingDown){
         return 1 - CountingDown / CD;
@@ -85,7 +108,7 @@ public class BattleUI : MonoBehaviour
 
     void HideSkillBtn(){
         for (int i = 0; i < SkillList.Count;i++){
-            SkillList[i].gameObject.SetActive(false);
+            SkillList[i].SetActive(false);
         }
     }
 
