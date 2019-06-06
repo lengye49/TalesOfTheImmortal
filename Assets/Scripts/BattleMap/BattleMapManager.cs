@@ -26,7 +26,6 @@ public class BattleMapManager:MonoBehaviour {
 
     void Start(){
         MapView = this.GetComponent<BattleMapView>();
-
     }
 
 
@@ -77,11 +76,27 @@ public class BattleMapManager:MonoBehaviour {
     ///**************
     //角色进入回合后的可行走状态
     ///**************
-    public void StartRound(BattleUnit unit){
+    public void StartRound(BattleUnit unit)
+    {
         standingGrid = mapGrids[unit.Position.x][unit.Position.y];
         targetGrid = standingGrid;
+
+        //重置一下可到达状态
+        if (walkableRange != null)
+            for (int i = 0; i < walkableRange.Count; i++)
+                GetBattleGridByPos(walkableRange[i].Position).Reachable = false;
+
         walkableRange = CircleTargets(unit.Steps);
-        Debug.Log("walkableRange.Count = " + walkableRange.Count);
+
+        //改变可到达状态
+        for (int i = 0; i < walkableRange.Count; i++)
+        {
+            GetBattleGridByPos(walkableRange[i].Position).Reachable = true;
+            //参数传递过程中，新建了BattleGrid
+            //walkableRange[i].Reachable = true;
+            //Debug.Log(walkableRange[i].Position + " Reachable = true");
+            //Debug.Log(GetBattleGridByPos(walkableRange[i].Position).Position + " Reachable = " + GetBattleGridByPos(walkableRange[i].Position).Reachable);
+        }
         MapView.SetWalkingState(standingGrid, walkableRange);
     }
 
@@ -210,28 +225,28 @@ public class BattleMapManager:MonoBehaviour {
         List<BattleGrid> temp = new List<BattleGrid>();
         temp.Add(targetGrid);
 
-        Debug.Log("↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓Processing↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓");
         for (int i = 0; i < count;i++){
             surroundings = temp;
             temp = new List<BattleGrid>();
             foreach(BattleGrid battleGrid in surroundings)
             {
-                //Debug.Log("Handling " + battleGrid.Position);
                 List<BattleGrid> neighbours = GetNeighbour(battleGrid);
                 foreach(BattleGrid neighbour in neighbours){
                     if (neighbour == null)
                         continue;
-                    //Debug.Log("New neighbout + " + neighbour.Position);
                     if(!grids.Contains(neighbour)){
                         grids.Add(neighbour);
                         temp.Add(neighbour);
-                        //Debug.Log("Add New Neighbour " + neighbour.Position);
                     }
                 }
             }
         }
         return grids;
     }
+
+    //public List<Vector2Int> GetCircleTargetPos(){
+
+    //}
 
     List<BattleGrid> GetNeighbour(BattleGrid grid){
         return new List<BattleGrid>

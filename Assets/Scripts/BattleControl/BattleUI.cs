@@ -44,7 +44,7 @@ public class BattleUI : MonoBehaviour
 
     }
 
-    void InitBattleUI(BattleUnit unit){
+    public void InitBattleUI(BattleUnit unit){
         InitHeadImage(unit.Image);
 
         InitSkills(unit.Skills);
@@ -72,6 +72,7 @@ public class BattleUI : MonoBehaviour
             }
             go.SetActive(true);
             go.GetComponent<Button>().interactable = true;
+            go.GetComponentInChildren<Text>().text = DefaultConfigs.SkillHotKeys[i];
             Image[] images = go.GetComponentsInChildren<Image>();
             images[0].sprite = Resources.Load("Skill/" + _skills[i].Image, typeof(Sprite)) as Sprite;
             SkillCovers.Add(images[1]);
@@ -110,6 +111,57 @@ public class BattleUI : MonoBehaviour
         for (int i = 0; i < SkillList.Count;i++){
             SkillList[i].SetActive(false);
         }
+    }
+
+    //监听快捷键
+    private void Update()
+    {
+        if (BattleManager.Instance.State == BattleState.Waiting)
+            return;
+        if(Input.GetKeyDown(KeyCode.Alpha1)){
+            Debug.Log("1 is down");
+        }
+    }
+
+    public void HotKeyDown(string hotKey){
+
+    }
+
+    //直接用Dictionary存储hotKey跟Skill的关系，不需要检测
+    public void SkillHotKeyDown(string hotKey){
+        for (int i = 0; i < DefaultConfigs.SkillHotKeys.Length;i++){
+            if(hotKey == DefaultConfigs.SkillHotKeys[i])
+            {
+                ChangeSkill(i);
+                return;
+            }
+        }
+        Debug.Log("Cannot find skillhotkey : " + hotKey);
+    }
+
+    void ChangeSkill(int index){
+
+    }
+
+    public void ItemHotKeyDown(string hotKey){
+
+    }
+
+    public void TryChangeItem(string hotKey){
+        for (int i = 0; i < DefaultConfigs.ItemHotKeys.Length; i++)
+        {
+            if (hotKey == DefaultConfigs.ItemHotKeys[i])
+            {
+                ChangeItem(i);
+                return;
+            }
+        }
+        Debug.Log("Cannot find itemhotkey : " + hotKey);
+    }
+
+    void ChangeItem(int index)
+    {
+
     }
 
     void UpdateHp(int hp,int hpMax){

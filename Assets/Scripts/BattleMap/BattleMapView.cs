@@ -75,11 +75,13 @@ public class BattleMapView : MonoBehaviour {
     /// 设置进入回合行走时格子的状态
     /// </summary>
     public void SetWalkingState(BattleGrid standingPoint,List<BattleGrid> walkableRange){
-        Debug.Log("Set Walking State");
+
         temp = walkableRange;
         for (int i = 0; i < walkableRange.Count;i++){
             if (!walkableRange[i].Occupied)
+            {
                 GetCellImageByBattleUnit(walkableRange[i]).sprite = walkable;
+            }
         }
         GetCellImageByBattleUnit(standingPoint).sprite = standard;
     }

@@ -35,7 +35,7 @@ public class TargetArrow : MonoBehaviour
             {
                 lastDirection = direction;
                 SetTargetGrids(direction);
-                Debug.Log(direction.ToString());
+                //Debug.Log(direction.ToString());
             }
         }
     }

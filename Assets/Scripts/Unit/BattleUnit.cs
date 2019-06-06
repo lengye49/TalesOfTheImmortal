@@ -30,7 +30,8 @@ public class BattleUnit
     public int DamageToManaShiled = 0;
     public bool Crippled;
 
-    public List<Skill> Skills = new List<Skill>();
+    public List<Skill> SkillList = new List<Skill>();
+    public Dictionary<string, Skill> Skills = new Dictionary<string, Skill>();
 
     public int Steps;
     public Vector2Int Position;
@@ -64,8 +65,8 @@ public class BattleUnit
         DamageToManaShiled = 0;
         Crippled = false;
 
-        Skills = new List<Skill>();
-        Skills.Add(new Skill());
+        SkillList = new List<Skill>();
+        SkillList.Add(new Skill());
 
         SingTime = 0;
         CD = 0;

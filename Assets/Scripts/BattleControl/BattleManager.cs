@@ -20,7 +20,7 @@ public class BattleManager : MonoBehaviour
     private List<BattleUnit> AllyList;
     private List<BattleUnit> EnemyList;
     private BattleView battleView;
-    private BattleState battleState;
+    public BattleState State;
     private TargetArrow arrow;
 
     private BattleUnit actingUnit;
@@ -75,7 +75,7 @@ public class BattleManager : MonoBehaviour
         BattleUnit enemy = SetBattleUnit("enemy",UnitSide.Enemy, new Vector2Int(3,8));
         EnemyList.Add(enemy);
 
-        battleState = BattleState.Waiting;
+        State = BattleState.Waiting;
 
         CheckRound();
     }
@@ -117,11 +117,14 @@ public class BattleManager : MonoBehaviour
         battleView.StartTurn(unit);
         actingUnit = unit;
 
+        if (unit.Side == UnitSide.Ally)
+            BattleUI.Instance.InitBattleUI(unit);
+
         //Todo下面的代码需要区分自动战斗还是手动战斗
         if(aiPerforming){
             Debug.Log("Start Ai Running...");
         }else{
-            battleState = BattleState.Walking;
+            State = BattleState.Walking;
             BattleMapManager.Instance.StartRound(unit);
         }
     }
@@ -145,8 +148,8 @@ public class BattleManager : MonoBehaviour
     //选择目标
     //**************
     void SelectingTarget(int skillIndex=0){
-        battleState = BattleState.SelectingTarget;
-        actingSkill = actingUnit.Skills[skillIndex];
+        State = BattleState.SelectingTarget;
+        actingSkill = actingUnit.SkillList[skillIndex];
         Vector3 pos = actingUnit.View.gameObject.transform.position;
         arrow.On(pos, actingSkill);
     }
@@ -259,11 +262,13 @@ public class BattleManager : MonoBehaviour
 
 
     public void ClickCellRespond(Vector2Int targetPos){
-        if(battleState==BattleState.Walking){
-            Debug.Log("Moveing to ");
-            UnitMove(targetPos);
-        }else if(battleState==BattleState.SelectingTarget){
-            Debug.Log("Confirming Target");
+        BattleGrid _grid = BattleMapManager.Instance.GetBattleGridByPos(targetPos);
+        if (State==BattleState.Walking){
+            if (_grid.Walkable)
+                UnitMove(targetPos);
+            else
+                Debug.Log(targetPos + " can not reachable : Occupied = "+_grid.Occupied+", Reachable = "+_grid.Reachable);
+        }else if(State==BattleState.SelectingTarget){
             ConfirmingTarget();
         }else{
             Debug.Log("State Error");
