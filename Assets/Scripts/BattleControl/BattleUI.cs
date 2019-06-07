@@ -17,18 +17,14 @@ public class BattleUI : MonoBehaviour
 
     public Slider HpSlider;
     public Slider MpSlider;
-    public Transform SkillContainer;
-    public Transform ItemContainer;
+    public Transform HotKeyContainer;
     public Image HeadImage;
 
     private GameObject skillPrefab;
     private GameObject itemPrefab;
     private Text hpText;
     private Text mpText;
-    private List<GameObject> SkillList;
-    private List<GameObject> ItemList;
-    private List<Image> SkillCovers;
-    private List<Image> ItemCovers;
+    private HotKey[] HotKeys;
 
     private void Awake()
     {
@@ -37,17 +33,13 @@ public class BattleUI : MonoBehaviour
         skillPrefab = Resources.Load("Prefabs/Skill", typeof(GameObject)) as GameObject;
         itemPrefab = Resources.Load("Prefabs/Item", typeof(GameObject)) as GameObject;
 
-        SkillList = new List<GameObject>();
-        ItemList = new List<GameObject>();
-        SkillCovers = new List<Image>();
-        ItemCovers = new List<Image>();
-
+        HotKeys = HotKeyContainer.GetComponentsInChildren<HotKey>();
     }
 
     public void InitBattleUI(BattleUnit unit){
         InitHeadImage(unit.Image);
 
-        InitSkills(unit.Skills);
+        InitHotKeys(unit.UnitHotKeys);
         //Item
         UpdateHp(unit.HP,unit.HpMax);
         UpdateMp(unit.MP, unit.MpMax);
@@ -58,46 +50,23 @@ public class BattleUI : MonoBehaviour
         HeadImage.sprite = sprite;
     }
 
-    void InitSkills(List<Skill> _skills){
-        GameObject go;
-        for (int i = 0; i < _skills.Count;i++){
-            if(i<SkillList.Count)
-            {
-                go = SkillList[i];
-            }else{
-                go = Instantiate(skillPrefab) as GameObject;
-                go.transform.SetParent(SkillContainer);
-                go.transform.localScale = Vector2.one;
-                go.transform.localPosition = GetCellPosition(i, 0);
-            }
-            go.SetActive(true);
-            go.GetComponent<Button>().interactable = true;
-            go.GetComponentInChildren<Text>().text = DefaultConfigs.SkillHotKeys[i];
-            Image[] images = go.GetComponentsInChildren<Image>();
-            images[0].sprite = Resources.Load("Skill/" + _skills[i].Image, typeof(Sprite)) as Sprite;
-            SkillCovers.Add(images[1]);
-            images[1].fillAmount = 0;
+    void InitHotKeys(Dictionary<int,HotKeyInfo> hotKeyInfos){
+        foreach(int key in hotKeyInfos.Keys){
+            if (key < HotKeys.Length)
+                HotKeys[key].Init(hotKeyInfos[key]);
         }
     }
+
+
 
     /// <summary>
     /// 更新由于时间变化导致的界面表现。实际运算放在BattleManager里
     /// </summary>
     /// <param name="_skills">Skills.</param>
     /// <param name="_items">Items.</param>
-    void UpdateUI(List<Skill> _skills,List<Item> _items){
-        //Skill CD
-        for (int i = 0; i < _skills.Count;i++){
-            if (_skills[i].CountingDown > 0)
-            {
-                SkillCovers[i].fillAmount = GetFillAmount(_skills[i].CD, _skills[i].CountingDown);
-                SkillList[i].GetComponent<Button>().interactable = false;
-            }else{
-                SkillList[i].GetComponent<Button>().interactable = true;
-            }
-        }
+    public void UpdateUI(Dictionary<int, HotKeyInfo> hotKeyInfos)
+    {
 
-        //Item CD
     }
 
     //void InitItems(){}
@@ -108,8 +77,8 @@ public class BattleUI : MonoBehaviour
     }
 
     void HideSkillBtn(){
-        for (int i = 0; i < SkillList.Count;i++){
-            SkillList[i].SetActive(false);
+        for (int i = 0; i < HotKeyList.Count;i++){
+            HotKeyList[i].SetActive(false);
         }
     }
 
@@ -120,32 +89,44 @@ public class BattleUI : MonoBehaviour
             return;
         if(Input.GetKeyDown(KeyCode.Alpha1)){
             Debug.Log("1 is down");
+            ChangeSkill(0);
+        }else if(Input.GetKeyDown(KeyCode.Alpha2)){
+            Debug.Log("2 is down");
+            ChangeSkill(1);
         }
+
     }
 
     public void HotKeyDown(string hotKey){
-
-    }
-
-    //直接用Dictionary存储hotKey跟Skill的关系，不需要检测
-    public void SkillHotKeyDown(string hotKey){
-        for (int i = 0; i < DefaultConfigs.SkillHotKeys.Length;i++){
-            if(hotKey == DefaultConfigs.SkillHotKeys[i])
-            {
-                ChangeSkill(i);
-                return;
-            }
+        switch(hotKey){
+            case "1":ChangeSkill(0);
+                break;
+            case "2":ChangeSkill(1);
+                break;
+            default:
+                break;
         }
-        Debug.Log("Cannot find skillhotkey : " + hotKey);
     }
+
+
+    //public void SkillHotKeyDown(string hotKey){
+    //    for (int i = 0; i < DefaultConfigs.SkillHotKeys.Length;i++){
+    //        if(hotKey == DefaultConfigs.SkillHotKeys[i])
+    //        {
+    //            ChangeSkill(i);
+    //            return;
+    //        }
+    //    }
+    //    Debug.Log("Cannot find skillhotkey : " + hotKey);
+    //}
 
     void ChangeSkill(int index){
 
     }
 
-    public void ItemHotKeyDown(string hotKey){
+    //public void ItemHotKeyDown(string hotKey){
 
-    }
+    //}
 
     public void TryChangeItem(string hotKey){
         for (int i = 0; i < DefaultConfigs.ItemHotKeys.Length; i++)

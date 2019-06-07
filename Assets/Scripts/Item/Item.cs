@@ -1,6 +1,6 @@
 ﻿
 
-public class Item 
+public class Item :ItemBase
 {
 
 }

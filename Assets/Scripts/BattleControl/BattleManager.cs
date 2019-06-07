@@ -149,7 +149,7 @@ public class BattleManager : MonoBehaviour
     //**************
     void SelectingTarget(int skillIndex=0){
         State = BattleState.SelectingTarget;
-        actingSkill = actingUnit.SkillList[skillIndex];
+        actingSkill = actingUnit.Skills[skillIndex];
         Vector3 pos = actingUnit.View.gameObject.transform.position;
         arrow.On(pos, actingSkill);
     }
