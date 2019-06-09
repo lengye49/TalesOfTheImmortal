@@ -73,6 +73,7 @@ def excel2txt(file_name):
                 key = table.cell(2, k).value
                 cell_type = table.cell(i, k).ctype
 
+
                 if k == 0 and str(value).strip() == '':
                     empty_break = True
                     break
@@ -133,6 +134,7 @@ def excel2txt(file_name):
                                 dump_error(file_name, key, "filed has wrong value")
 
                 content = content + str(value) + ","
+
                 k = k + 1
 
             if not empty_break:
