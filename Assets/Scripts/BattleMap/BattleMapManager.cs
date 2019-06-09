@@ -35,10 +35,10 @@ public class BattleMapManager:MonoBehaviour {
     public void InitBattleMap(){
         if (!isExist)
         {
-            mapGrids = new BattleGrid[20][];
+            mapGrids = new BattleGrid[DefaultConfigs.BattleMapSize.x][];
             for (int i = 0; i < mapGrids.Length; i++)
             {
-                mapGrids[i] = new BattleGrid[10];
+                mapGrids[i] = new BattleGrid[DefaultConfigs.BattleMapSize.y];
                 for (int j = 0; j < mapGrids[i].Length; j++)
                 {
                     mapGrids[i][j] = new BattleGrid(i, j);

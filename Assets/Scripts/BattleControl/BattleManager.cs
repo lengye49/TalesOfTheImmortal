@@ -72,7 +72,7 @@ public class BattleManager : MonoBehaviour
         BattleUnit player = SetBattleUnit("player",UnitSide.Ally, new Vector2Int(3,3));
         AllyList.Add(player);
 
-        BattleUnit enemy = SetBattleUnit("enemy",UnitSide.Enemy, new Vector2Int(3,8));
+        BattleUnit enemy = SetBattleUnit("enemy",UnitSide.Enemy, new Vector2Int(5,3));
         EnemyList.Add(enemy);
 
         State = BattleState.Waiting;
@@ -155,7 +155,7 @@ public class BattleManager : MonoBehaviour
     }
 
     void ConfirmingTarget(){
-        Debug.Log("Releasing Skill " + actingUnit.Name + "," + actingSkill.Description);
+        Debug.Log("Releasing Skill " + actingUnit.Name + "," + actingSkill.DescriptionLang);
         arrow.Off();
         BattleMapManager.Instance.MapView.ResetState();
         //Todo 释放技能特效
@@ -212,7 +212,7 @@ public class BattleManager : MonoBehaviour
         }
         object[] parameters = new object[] { attacker, skill.Power.ToString(), target };
         int result = (int)method.Invoke(handler, parameters);
-        Debug.Log(skill.Name + " released, effect--> " + methodName + ", result--> " + result);
+        Debug.Log(skill.NameLang + " released, effect--> " + methodName + ", result--> " + result);
     }
 
 
@@ -272,6 +272,13 @@ public class BattleManager : MonoBehaviour
             ConfirmingTarget();
         }else{
             Debug.Log("State Error");
+        }
+    }
+
+    public void HotKeyRespond(int index){
+        if(!actingUnit.HotKeys[index].IsInteractive){
+            Debug.Log("Can not use hotkey : "+DefaultConfigs.HotKeyCode[index]);
+            return;
         }
     }
 

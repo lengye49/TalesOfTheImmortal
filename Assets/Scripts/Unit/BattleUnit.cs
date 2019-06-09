@@ -29,12 +29,10 @@ public class BattleUnit
     public int Rebound = 0;//反伤
     public int DamageToManaShiled = 0;
     public bool Crippled;
+    public List<HotKeyInfo> HotKeys;
 
-    public Dictionary<int, PlayerSkill> UnitSkillInfo;
-    public List<int> UnitSkills;
-    public Dictionary<int, HotKeyInfo> UnitHotKeys;
-
-    public List<Skill> Skills = new List<Skill>();
+    public List<Skill> Skills;
+    public List<Item> Items;
 
     public int Steps;
     public Vector2Int Position;
@@ -43,6 +41,8 @@ public class BattleUnit
     public float WaitingTime{
         get { return CD + SingTime; }
     }
+
+    public BattleUnit(){}
 
     public BattleUnit(string name,UnitSide side, BattleUnitView view,Vector2Int pos){
         Name = name;
@@ -67,13 +67,16 @@ public class BattleUnit
         Rebound = 0;
         DamageToManaShiled = 0;
         Crippled = false;
-
-
-        Skills = new List<Skill>();
-        Skills.Add(new Skill());
-
         SingTime = 0;
         CD = 0;
+
+        HotKeys = new List<HotKeyInfo>();
+        HotKeyInfo info = new HotKeyInfo();
+        HotKeys.Add(info);
+
+        Skills = new List<Skill>();
+        Skill skill = new Skill();
+        Skills.Add(skill);
 
         view.Init();
     }

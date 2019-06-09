@@ -24,7 +24,7 @@ public class BattleUI : MonoBehaviour
     private GameObject itemPrefab;
     private Text hpText;
     private Text mpText;
-    private HotKey[] HotKeys;
+    private HotKeyUI[] HotKeys;
 
     private void Awake()
     {
@@ -33,13 +33,13 @@ public class BattleUI : MonoBehaviour
         skillPrefab = Resources.Load("Prefabs/Skill", typeof(GameObject)) as GameObject;
         itemPrefab = Resources.Load("Prefabs/Item", typeof(GameObject)) as GameObject;
 
-        HotKeys = HotKeyContainer.GetComponentsInChildren<HotKey>();
+        HotKeys = HotKeyContainer.GetComponentsInChildren<HotKeyUI>();
     }
 
     public void InitBattleUI(BattleUnit unit){
         InitHeadImage(unit.Image);
 
-        InitHotKeys(unit.UnitHotKeys);
+        InitHotKeys(unit.Skills,unit.Items);
         //Item
         UpdateHp(unit.HP,unit.HpMax);
         UpdateMp(unit.MP, unit.MpMax);
@@ -50,37 +50,17 @@ public class BattleUI : MonoBehaviour
         HeadImage.sprite = sprite;
     }
 
-    void InitHotKeys(Dictionary<int,HotKeyInfo> hotKeyInfos){
-        foreach(int key in hotKeyInfos.Keys){
-            if (key < HotKeys.Length)
-                HotKeys[key].Init(hotKeyInfos[key]);
+    void InitHotKeys(List<Skill> skills,List<Item> items){
+        for (int i = 0; i < skills.Count; i++)
+        {
+            int index = skills[i].HotKeyIndex;
+            HotKeys[index].Init(skills[i].Image);
+            HotKeys[index].UpdateCD(skills[i].CD, skills[i].Counting);
         }
+        //Todo Item
     }
 
 
-
-    /// <summary>
-    /// 更新由于时间变化导致的界面表现。实际运算放在BattleManager里
-    /// </summary>
-    /// <param name="_skills">Skills.</param>
-    /// <param name="_items">Items.</param>
-    public void UpdateUI(Dictionary<int, HotKeyInfo> hotKeyInfos)
-    {
-
-    }
-
-    //void InitItems(){}
-
-
-    float GetFillAmount(float CD,float CountingDown){
-        return 1 - CountingDown / CD;
-    }
-
-    void HideSkillBtn(){
-        for (int i = 0; i < HotKeyList.Count;i++){
-            HotKeyList[i].SetActive(false);
-        }
-    }
 
     //监听快捷键
     private void Update()
@@ -98,50 +78,15 @@ public class BattleUI : MonoBehaviour
     }
 
     public void HotKeyDown(string hotKey){
-        switch(hotKey){
-            case "1":ChangeSkill(0);
-                break;
-            case "2":ChangeSkill(1);
-                break;
-            default:
-                break;
-        }
+        if (!DefaultConfigs.HotKeyCode.Contains(hotKey))
+            return;
+        int index = DefaultConfigs.HotKeyCode.IndexOf(hotKey);
+        BattleManager.Instance.HotKeyRespond(index);
     }
 
-
-    //public void SkillHotKeyDown(string hotKey){
-    //    for (int i = 0; i < DefaultConfigs.SkillHotKeys.Length;i++){
-    //        if(hotKey == DefaultConfigs.SkillHotKeys[i])
-    //        {
-    //            ChangeSkill(i);
-    //            return;
-    //        }
-    //    }
-    //    Debug.Log("Cannot find skillhotkey : " + hotKey);
-    //}
+   
 
     void ChangeSkill(int index){
-
-    }
-
-    //public void ItemHotKeyDown(string hotKey){
-
-    //}
-
-    public void TryChangeItem(string hotKey){
-        for (int i = 0; i < DefaultConfigs.ItemHotKeys.Length; i++)
-        {
-            if (hotKey == DefaultConfigs.ItemHotKeys[i])
-            {
-                ChangeItem(i);
-                return;
-            }
-        }
-        Debug.Log("Cannot find itemhotkey : " + hotKey);
-    }
-
-    void ChangeItem(int index)
-    {
 
     }
 
@@ -156,18 +101,5 @@ public class BattleUI : MonoBehaviour
         MpSlider.value = value;
         mpText.text = mp + "/" + mpMax;
     }
-
-    /// <summary>
-    /// Gets the cell position.
-    /// </summary>
-    /// <returns>The cell position.</returns>
-    /// <param name="index">Index.</param>
-    /// <param name="type">Type. 0Skill, 1Item</param>
-    Vector2 GetCellPosition(int index,int type){
-        float x = 100 + 80 * index;
-        float y = (type == 0 ? -480 : -400);
-        return new Vector2(x, y);
-    }
-
 
 }

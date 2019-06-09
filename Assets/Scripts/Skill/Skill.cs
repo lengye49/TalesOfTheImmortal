@@ -1,19 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Skill:ItemBase
+public class Skill
 {
+    public int Id;
+    public int Level;
+    public int LevelMax;
+    public int NameLang;
+    public int DescriptionLang;
+    public Sprite Image;
+    public int HotKeyIndex;
+
     public SkillRangeType RangeType;
     public int Range;
     public SkillEffectType EffectType;
+
+    public int Attribute;
     public int Power;
+
+    public float CD;
     public float Sing;
+    public float Counting;
 
     public Skill(){
         Id = 1;
-        Name = "Test Skill";
-        Image = "LinerSword";
-        Description = "This is a Linear Skill";
+        NameLang = 10000;
+        DescriptionLang = 10001;
+        Image = Resources.Load("Skill/LinerSword",typeof(Sprite)) as Sprite;
+        HotKeyIndex = 0;
+        RangeType = SkillRangeType.Line;
+        Range = 3;
+        EffectType = SkillEffectType.PhysicalDamage;
+        Power = 10000;
     }
 }
 
@@ -34,21 +52,27 @@ public enum SkillEffectType{
     Summon,
 }
 
-public class PlayerSkill{
+/// <summary>
+/// 玩家角色存储的技能信息
+/// </summary>
+public class SkillInfo{
     public int Id;
+    public int Type;//0BasicSkill,BattleSkill
     public int Level;
     public int Experience;
-    public int HotKeyIndex;
 }
 
-public class BattleSkill{
-    public Skill _skill;
-    public Sprite _image;
-    public float Counting;
+/// <summary>
+/// 心法类
+/// </summary>
+public class MentalMethod{
+    public int Id;
+    public int NameLang;
+    public int DescriptionLang;
+    public string Image;
+    public int MpIncrease;
 
-    public BattleSkill(Skill skill){
-        _skill = skill;
-        _image = Resources.Load("Skill/" + skill.Image, typeof(Sprite)) as Sprite;
+    public MentalMethod(){
 
     }
 }

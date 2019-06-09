@@ -15,7 +15,7 @@ public class BattleMapView : MonoBehaviour {
 
     private float cellWidth = 104;
     private float cellHeight = 120;
-    private Vector2 offset = new Vector2(-800, 420);
+    private Vector2 offset;
 
     private List<BattleGrid> temp;
 
@@ -27,13 +27,16 @@ public class BattleMapView : MonoBehaviour {
         walkable = Resources.Load("BattleMap/walkable", typeof(Sprite)) as Sprite;
         selecting = Resources.Load("BattleMap/selecting", typeof(Sprite)) as Sprite;
         targeting = Resources.Load("BattleMap/targeting", typeof(Sprite)) as Sprite;
+        float x = -(DefaultConfigs.BattleMapSize.x-3) * cellWidth / 2;
+        float y = (DefaultConfigs.BattleMapSize.y-1) * cellHeight / 2;
+        offset = new Vector2(x, y);
     }
 
     public void InitBattleMapView(){
-        cellList = new GameObject[20][];
-        for (int i = 0; i < 20;i++){
-            cellList[i] = new GameObject[10];
-            for (int j = 0; j < 10; j++)
+        cellList = new GameObject[DefaultConfigs.BattleMapSize.x][];
+        for (int i = 0; i < DefaultConfigs.BattleMapSize.x; i++){
+            cellList[i] = new GameObject[DefaultConfigs.BattleMapSize.y];
+            for (int j = 0; j < DefaultConfigs.BattleMapSize.y; j++)
             {
                 cellList[i][j]= InitGrid(i, j);
             }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class HotKey : MonoBehaviour
+public class HotKeyUI : MonoBehaviour
 {
     private Image icon;
     private Image cover;
@@ -17,25 +17,16 @@ public class HotKey : MonoBehaviour
         button = GetComponent<Button>();
     }
 
-    public void Init(HotKeyInfo info)
+    public void Init(Sprite sprite)
     {
-        if (info.type == 0)
-        {
-            _skill = LoadFiles.GetSkill();
-            icon.sprite = Resources.Load("Skill/" + _skill.Image, typeof(Sprite)) as Sprite;
-        }
-        else
-        {
-            _item = LoadFiles.GetItem();
-            icon.sprite = null;
-        }
+        icon.sprite = sprite;
     }
 
-    public void TimeChange(float CD, float counting){
+    public void UpdateCD(float CD, float counting){
         cover.fillAmount= 1 - counting / CD;
     }
 
-    public void OnClick(int index)
+    public void OnClick()
     {
         string hotkey = GetComponentInChildren<Text>().text;
         BattleUI.Instance.HotKeyDown(hotkey);

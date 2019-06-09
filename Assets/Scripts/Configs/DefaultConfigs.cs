@@ -1,7 +1,10 @@
-﻿
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class DefaultConfigs {
-    public static string[] SkillHotKeys = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
-    public static string[] ItemHotKeys = new string[] { "Q", "W", "E", "R", "T", "Y" };
 
+    public static List<string> HotKeyCode = new List<string>(){
+        "1","2","3","4","5","6","Q","W","E","R"
+    };
+    public static Vector2Int BattleMapSize = new Vector2Int(15, 7);
 }
