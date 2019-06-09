@@ -19,9 +19,9 @@ public class BattleManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log(LoadFiles.GetLanguage(10000));
-        Debug.Log(LoadFiles.GetLanguage(20004));
-        Debug.Log(LoadFiles.GetLanguage(30000));
+        //Debug.Log(LoadFiles.GetLanguage(10000));
+        //Debug.Log(LoadFiles.GetLanguage(20004));
+        //Debug.Log(LoadFiles.GetLanguage(30000));
     }
 
     private List<BattleUnit> AllyList;
