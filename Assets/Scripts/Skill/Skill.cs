@@ -9,17 +9,15 @@ public class Skill
     public int NameLang;
     public int DescriptionLang;
     public Sprite Image;
-    public int HotKeyIndex;
-
     public SkillRangeType RangeType;
     public int Range;
     public SkillEffectType EffectType;
-
     public int Attribute;
     public int Power;
-
     public float CD;
     public float Sing;
+
+    public int HotKeyIndex;
     public float Counting;
 
     public Skill(){
