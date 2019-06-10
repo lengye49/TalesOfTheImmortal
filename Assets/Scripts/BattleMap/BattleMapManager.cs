@@ -74,7 +74,7 @@ public class BattleMapManager:MonoBehaviour {
 
 
     ///**************
-    //角色进入回合后的可行走状态
+    //角色进入回合时的可行走状态
     ///**************
     public void StartRound(BattleUnit unit)
     {
@@ -101,10 +101,28 @@ public class BattleMapManager:MonoBehaviour {
     }
 
     /// <summary>
-    /// 找到最近的目标
+    /// 找到离目标最近的移动点
     /// </summary>
-    BattleGrid GetNearestEnemy(){
-        return new BattleGrid(0,0);
+    public Vector2Int GetMovingTargetPos(BattleUnit unit,Vector2Int targetPos){
+        standingGrid = mapGrids[unit.Position.x][unit.Position.y];
+        walkableRange = CircleTargets(unit.Steps);
+        int distance = 0;
+        int temp;
+        int index = 0;
+        bool isStraight;
+        bool tempStraight;
+
+        distance = MathCalculator.GetBattleGridDistance(targetPos, walkableRange[0].Position, out isStraight);
+
+        for (int i = 1; i < walkableRange.Count;i++){
+            temp = MathCalculator.GetBattleGridDistance(targetPos, walkableRange[i].Position,out tempStraight);
+            if(temp < distance || (temp==distance && !isStraight && tempStraight)){
+                distance = temp;
+                isStraight = tempStraight;
+                index = i;
+            }
+        }
+        return walkableRange[index].Position;
     }
 
     ///**************

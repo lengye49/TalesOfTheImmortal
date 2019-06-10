@@ -130,6 +130,7 @@ public class BattleManager : MonoBehaviour
         //Todo下面的代码需要区分自动战斗还是手动战斗
         if(aiPerforming){
             Debug.Log("Start Ai Running...");
+            AiMove();
         }else{
             State = BattleState.Walking;
             BattleMapManager.Instance.StartRound(unit);
@@ -143,22 +144,57 @@ public class BattleManager : MonoBehaviour
         Vector2 newPos = BattleMapManager.Instance.UnitMoveTo(actingUnit.Position,targetPos);
         actingUnit.View.MoveTo(newPos);
         actingUnit.Position = targetPos;
+        //Todo 等待动画完成
+        FinishMoving();
+    }
 
+    void AiMove(){
+        Vector2Int targetPos;
+        if (actingUnit.Side == UnitSide.Ally)
+            targetPos = GetNearestOpponent(EnemyList);
+        else
+            targetPos = GetNearestOpponent(AllyList);
+
+        Vector2Int newPos = BattleMapManager.Instance.GetMovingTargetPos(actingUnit, targetPos);
+        UnitMove(newPos);
+    }
+
+    Vector2Int GetNearestOpponent(List<BattleUnit> opponents){
+        int distance = 0;
+        int index = 0;
+        int temp;
+        for (int i = 0; i < opponents.Count;i++){
+            bool isStraight;
+            temp = MathCalculator.GetBattleGridDistance(actingUnit.Position, opponents[i].Position,out isStraight);
+            if (i == 0 || temp < distance)
+            {
+                distance = temp;
+                index = i;
+            }
+        }
+        return opponents[index].Position;
+    }
+
+    public void FinishMoving()
+    {
         if (!aiPerforming)
             BattleMapManager.Instance.MapView.ResetState();
         SelectingTarget();
     }
-
-
-
     //**************
     //选择目标
     //**************
     void SelectingTarget(int skillIndex=0){
-        State = BattleState.SelectingTarget;
-        actingSkill = actingUnit.Skills[skillIndex];
-        Vector3 pos = actingUnit.View.gameObject.transform.position;
-        arrow.On(pos, actingSkill);
+        if (aiPerforming) { 
+            
+        }
+        else
+        {
+            State = BattleState.SelectingTarget;
+            actingSkill = actingUnit.Skills[skillIndex];
+            Vector3 pos = actingUnit.View.gameObject.transform.position;
+            arrow.On(pos, actingSkill);
+        }
     }
 
     void ConfirmingTarget(){
