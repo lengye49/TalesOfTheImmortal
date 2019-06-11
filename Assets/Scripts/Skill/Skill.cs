@@ -16,6 +16,7 @@ public class Skill
     public int Power;
     public float CD;
     public float Sing;
+    public float Priority;
 
     public int HotKeyIndex;
     public float Counting;

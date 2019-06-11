@@ -40,6 +40,18 @@ public class TargetArrow : MonoBehaviour
         }
     }
 
+
+    //Todo 这里涉及了vector3和vector2的加减
+    public void AiSelectingTarget(Vector3 attackPos,Vector3 defendPos,Skill skill){
+        InitState(attackPos, skill);
+
+        mouseVector = defendPos - attackPos;
+        float angle = Vector3.Angle(Vector3.right, mouseVector);
+        bool above = defendPos.y > standardVector.y;
+        GridDirection direction = GetPointingDirection(angle, above);
+        SetTargetGrids(direction);
+    }
+
     GridDirection GetPointingDirection(float angle,bool isAbove){
         if(angle<60 && angle>0 ){
             if (isAbove)
@@ -94,13 +106,15 @@ public class TargetArrow : MonoBehaviour
     /// </summary>
     public void On(Vector3 pos,Skill skill)
     {
+        isOn = true;
+        InitState(pos, skill);
+    }
+
+    void InitState(Vector3 pos,Skill skill){
         attackerPosition = pos;
         standardVector = pos + Vector3.one;
-        isOn = true;
-
         targetGridList = new Dictionary<GridDirection, List<BattleGrid>>();
         targetGrids = new List<BattleGrid>();
-
         skillCasting = skill;
     }
 

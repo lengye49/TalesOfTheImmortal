@@ -34,6 +34,8 @@ public class BattleManager : MonoBehaviour
     private Skill actingSkill;
 
     private bool aiPerforming = false;
+    private int enemyDisMin = 0;
+    private BattleUnit nearestEnemy;
 
     public GameObject TestStartBattleBtn;
     private GameObject unitPrefab;
@@ -155,10 +157,12 @@ public class BattleManager : MonoBehaviour
         else
             targetPos = GetNearestOpponent(AllyList);
 
+
         Vector2Int newPos = BattleMapManager.Instance.GetMovingTargetPos(actingUnit, targetPos);
         UnitMove(newPos);
     }
 
+    //Todo 未考虑不能走的情况
     Vector2Int GetNearestOpponent(List<BattleUnit> opponents){
         int distance = 0;
         int index = 0;
@@ -172,6 +176,8 @@ public class BattleManager : MonoBehaviour
                 index = i;
             }
         }
+        enemyDisMin = distance;
+        nearestEnemy = opponents[index];
         return opponents[index].Position;
     }
 
@@ -179,22 +185,51 @@ public class BattleManager : MonoBehaviour
     {
         if (!aiPerforming)
             BattleMapManager.Instance.MapView.ResetState();
+
+        //Todo 增加时间
         SelectingTarget();
     }
     //**************
     //选择目标
     //**************
-    void SelectingTarget(int skillIndex=0){
-        if (aiPerforming) { 
-            
+    void SelectingTarget(){
+        if (aiPerforming) {
+            int skillIndex = AiSelectSkill();
+            if (skillIndex >= 0)
+            {
+                Vector3 pos1 = actingUnit.View.gameObject.transform.position;
+                Vector3 pos2 = nearestEnemy.View.gameObject.transform.position;
+                actingSkill = actingUnit.Skills[skillIndex];
+                arrow.AiSelectingTarget(pos1, pos2, actingSkill);
+                ReleasingSkill();
+            }else{
+                //没有可用技能的处理情况
+            }
         }
         else
         {
             State = BattleState.SelectingTarget;
-            actingSkill = actingUnit.Skills[skillIndex];
+
+            //Todo 走完不直接选技能,等待玩家手选
+            actingSkill = actingUnit.Skills[0];
             Vector3 pos = actingUnit.View.gameObject.transform.position;
             arrow.On(pos, actingSkill);
         }
+    }
+
+    int AiSelectSkill(){
+        int index = -1;
+        for (int i = 0; i < actingUnit.Skills.Count;i++){
+            if (actingUnit.Skills[i].Counting > 0)
+                continue;
+            if (actingUnit.Skills[i].Range < enemyDisMin)
+                continue;
+            if (index == -1)
+                index = i;
+            if (actingUnit.Skills[i].Priority > actingUnit.Skills[index].Priority)
+                index = i;
+        }
+        return index;
     }
 
     void ConfirmingTarget(){
@@ -202,11 +237,7 @@ public class BattleManager : MonoBehaviour
         arrow.Off();
         BattleMapManager.Instance.MapView.ResetState();
         //Todo 释放技能特效
-        List<BattleUnit> targets = GetTargets(arrow.targetGrids);
-        Debug.Log(targets.Count + " targets found!");
-        for (int i = 0; i < targets.Count;i++){
-            CastSkill(actingUnit, targets[i], actingSkill);
-        }
+        ReleasingSkill();
     }
 
     List<BattleUnit> GetTargets(List<BattleGrid> targetGrids){
@@ -239,8 +270,25 @@ public class BattleManager : MonoBehaviour
     //**************
     //释放技能
     //**************
-    //Todo 多个目标
-    public void CastSkill(BattleUnit attacker,BattleUnit target,Skill skill){
+    //Todo 多个目标，多个技能效果
+
+    public void ReleasingSkill(){
+        List<BattleUnit> targets = GetTargets(arrow.targetGrids);
+        Debug.Log(targets.Count + " targets found!");
+        for (int i = 0; i < targets.Count; i++)
+        {
+            CastSkillEffect(actingUnit, targets[i], actingSkill);
+        }
+        //扣除其它单位CD
+        TimeChange(actingSkill.CD);
+        //增加角色及技能CD
+        actingUnit.CD += actingSkill.CD;
+        actingSkill.Counting += actingSkill.CD;
+        //回合检测
+        CheckRound();
+    }
+
+    public void CastSkillEffect(BattleUnit attacker,BattleUnit target,Skill skill){
         Debug.Log("Casting Skill to " + target.Name);
         if (skill == null)
             return;
@@ -258,6 +306,35 @@ public class BattleManager : MonoBehaviour
         Debug.Log(skill.NameLang + " released, effect--> " + methodName + ", result--> " + result);
     }
 
+    //**************
+    //CD变更
+    //**************
+    void TimeChange(float t){
+        for (int i = 0; i < AllyList.Count; i++)
+        {
+            ChangeCD(AllyList[i],t);
+        }
+        for (int i = 0; i < EnemyList.Count;i++){
+            ChangeCD(EnemyList[i],t);
+        }
+    }
+
+    void ChangeCD(BattleUnit unit,float t){
+        if (unit.SingTime > t)
+            unit.SingTime -= t;
+        else{
+            unit.CD = GetNewCD(unit.CD, t - unit.SingTime);
+            unit.SingTime = 0;
+        }
+        for (int i = 0; i < unit.Skills.Count;i++){
+            unit.Skills[i].Counting = GetNewCD(unit.Skills[i].Counting, t);
+        }
+        //Todo Item
+    }
+
+    float GetNewCD(float cd, float t){
+        return cd > t ? cd - t : 0;
+    }
 
     //**************
     //结果判定，如果战斗没结束，则进入下一回合
