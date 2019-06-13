@@ -13,8 +13,8 @@ public class BattleMapView : MonoBehaviour {
     private Sprite selecting;
     private Sprite targeting;
 
-    private float cellWidth = 104;
-    private float cellHeight = 120;
+    private float cellWidth = 52;
+    private float cellHeight = 60;
     private Vector2 offset;
 
     private List<BattleGrid> temp;
