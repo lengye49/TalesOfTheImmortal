@@ -62,7 +62,7 @@ public class BattleManager : MonoBehaviour
      * 8. 回合判定，轮到敌人。
      * 9. 敌人AI-->移动-->选择目标-->释放技能。
      * 10.循环3步直到出现战斗结果
-     * 11.停止，并可重新战斗 Done
+     * 11.停止，并可重新战斗
     */
     //**************
 
@@ -100,34 +100,39 @@ public class BattleManager : MonoBehaviour
     }
 
 
-    //**************
-    //回合判定
-    //**************
+    //********回合判定********
     void CheckRound(){
-        Debug.Log("Checking Round");
-        BattleUnit _unit = AllyList[0];
+        Debug.Log("*************************************************************************************\nNew Round Start : ");
+        actingUnit = AllyList[0];
         for (int i = 0; i < AllyList.Count; i++)
         {
-            if (AllyList[i].WaitingTime < _unit.WaitingTime)
-                _unit = AllyList[i];
+            Debug.Log("Ally" + i + " CD = " + AllyList[i].WaitingTime);
+            if (AllyList[i].WaitingTime < actingUnit.WaitingTime)
+                actingUnit = AllyList[i];
         }
         for (int i = 0; i < EnemyList.Count; i++)
         {
-            if (EnemyList[i].WaitingTime < _unit.WaitingTime)
-                _unit = EnemyList[i];
+            Debug.Log("Enemy" + i + " CD = " + EnemyList[i].WaitingTime);
+            if (EnemyList[i].WaitingTime < actingUnit.WaitingTime)
+                actingUnit = EnemyList[i];
         }
-        StartRound(_unit);
+        StartRound();
     }
 
-    void StartRound(BattleUnit unit)
-    {
-        Debug.Log("Starting Round "+unit.Side.ToString());
-        //切换UI状态
-        battleView.StartTurn(unit);
-        actingUnit = unit;
 
-        if (unit.Side == UnitSide.Ally)
-            BattleUI.Instance.InitBattleUI(unit);
+    //********回合开始********
+    void StartRound()
+    {
+        //切换UI状态
+        battleView.StartTurn(actingUnit);
+
+        if (actingUnit.Side == UnitSide.Ally)
+        {
+            BattleUI.Instance.InitBattleUI(actingUnit);
+            aiPerforming = false;
+        }
+        else
+            aiPerforming = true;
 
         //Todo下面的代码需要区分自动战斗还是手动战斗
         if(aiPerforming){
@@ -135,13 +140,11 @@ public class BattleManager : MonoBehaviour
             AiMove();
         }else{
             State = BattleState.Walking;
-            BattleMapManager.Instance.StartRound(unit);
+            BattleMapManager.Instance.StartRound(actingUnit);
         }
     }
 
-    //**************
-    //Unit移动(手动移动)
-    //**************
+    //********Unit移动(手动移动)********
     void UnitMove(Vector2Int targetPos){
         Vector2 newPos = BattleMapManager.Instance.UnitMoveTo(actingUnit.Position,targetPos);
         actingUnit.View.MoveTo(newPos);
@@ -150,7 +153,9 @@ public class BattleManager : MonoBehaviour
         FinishMoving();
     }
 
+    //********Unit移动(AI移动)********
     void AiMove(){
+        Debug.Log("AIPerforming Step 1: Move.");
         Vector2Int targetPos;
         if (actingUnit.Side == UnitSide.Ally)
             targetPos = GetNearestOpponent(EnemyList);
@@ -181,6 +186,7 @@ public class BattleManager : MonoBehaviour
         return opponents[index].Position;
     }
 
+    //********结束移动进入选择目标阶段********
     public void FinishMoving()
     {
         if (!aiPerforming)
@@ -189,11 +195,12 @@ public class BattleManager : MonoBehaviour
         //Todo 增加时间
         SelectingTarget();
     }
-    //**************
-    //选择目标
-    //**************
+
+
+    //********选择目标********
     void SelectingTarget(){
         if (aiPerforming) {
+            Debug.Log("AIPerforming Step 2: SelectingTarget.");
             int skillIndex = AiSelectSkill();
             if (skillIndex >= 0)
             {
@@ -201,9 +208,10 @@ public class BattleManager : MonoBehaviour
                 Vector3 pos2 = nearestEnemy.View.gameObject.transform.position;
                 actingSkill = actingUnit.Skills[skillIndex];
                 arrow.AiSelectingTarget(pos1, pos2, actingSkill);
+                Debug.Log("AIPerforming Step 3: Release Skill.");
                 ReleasingSkill();
             }else{
-                //没有可用技能的处理情况
+                CheckRound();
             }
         }
         else
@@ -217,6 +225,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    //********根据权重选择可释放的技能********
     int AiSelectSkill(){
         int index = -1;
         for (int i = 0; i < actingUnit.Skills.Count;i++){
@@ -285,7 +294,7 @@ public class BattleManager : MonoBehaviour
         actingUnit.CD += actingSkill.CD;
         actingSkill.Counting += actingSkill.CD;
         //回合检测
-        CheckRound();
+        CheckIsBattleEnd();
     }
 
     public void CastSkillEffect(BattleUnit attacker,BattleUnit target,Skill skill){
@@ -336,9 +345,8 @@ public class BattleManager : MonoBehaviour
         return cd > t ? cd - t : 0;
     }
 
-    //**************
-    //结果判定，如果战斗没结束，则进入下一回合
-    //**************
+
+    //********战斗结束判定********
     void CheckIsBattleEnd(){
         int unitNum = 0;
         for (int i = 0; i < AllyList.Count;i++){
@@ -347,7 +355,7 @@ public class BattleManager : MonoBehaviour
         }
         if (unitNum <= 0)
         {
-            FinishBattle(true);
+            FinishBattle(false);
             return;
         }
 
@@ -357,27 +365,23 @@ public class BattleManager : MonoBehaviour
                 unitNum++;
         }
         if(unitNum<=0){
-            FinishBattle(false);
+            FinishBattle(true);
             return;
         }
         CheckRound();
     }
 
     void FinishBattle(bool playerWin){
-        Debug.Log("BattleResult : " + (playerWin ? "Win" : "Lose"));
+        Debug.Log("BattleResult : " + (playerWin ? "Win" : "Lose")+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         TestStartBattleBtn.SetActive(true);
-    }
-
-    //**************
-    //自动行动
-    //**************
-    void AIRound(BattleUnit unit){
-        //1. Move
-
-        //2. Attack
-
-        //3.NextRound
-        CheckIsBattleEnd();
+        for (int i = 0; i < AllyList.Count;i++){
+            DestroyImmediate(AllyList[i].View.gameObject);
+        }
+        AllyList.Clear();
+        for (int i = 0; i < EnemyList.Count;i++){
+            DestroyImmediate(EnemyList[i].View.gameObject);
+        }
+        EnemyList.Clear();
     }
 
 

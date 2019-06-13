@@ -44,11 +44,20 @@ public class BattleMapManager:MonoBehaviour {
                     mapGrids[i][j] = new BattleGrid(i, j);
                 }
             }
+            MapView.InitBattleMapView();
             isExist = true;
+        }else{
+            for (int i = 0; i < mapGrids.Length; i++)
+            {
+                for (int j = 0; j < mapGrids[i].Length; j++)
+                {
+                    mapGrids[i][j].Occupied = false;
+                    mapGrids[i][j].Reachable = false;
+                }
+            }
         }
         //standingGrid = mapGrids[0][0];
         //targetGrid = mapGrids[0][0];
-        MapView.InitBattleMapView();
     }
 
     //**************

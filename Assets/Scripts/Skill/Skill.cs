@@ -30,6 +30,7 @@ public class Skill
         RangeType = SkillRangeType.Line;
         Range = 3;
         EffectType = SkillEffectType.PhysicalDamage;
+        CD = 2;
         Power = 10000;
     }
 }
