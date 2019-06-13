@@ -124,8 +124,10 @@ public class BattleMapManager:MonoBehaviour {
         distance = MathCalculator.GetBattleGridDistance(targetPos, walkableRange[0].Position, out isStraight);
 
         for (int i = 1; i < walkableRange.Count;i++){
+            if (!walkableRange[i].Walkable)
+                continue;
             temp = MathCalculator.GetBattleGridDistance(targetPos, walkableRange[i].Position,out tempStraight);
-            if(temp < distance || (temp==distance && !isStraight && tempStraight)){
+            if(temp < distance || (!isStraight && tempStraight)){
                 distance = temp;
                 isStraight = tempStraight;
                 index = i;
