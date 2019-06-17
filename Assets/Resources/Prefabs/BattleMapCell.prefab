@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114870078975113856}
   - component: {fileID: 114158832023139258}
   - component: {fileID: 114066566089298196}
+  - component: {fileID: 114745141055393292}
   m_Layer: 5
   m_Name: BattleMapCell
   m_TagString: Untagged
@@ -108,6 +109,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6984e3e2885854af5a5f1cf1db06c147, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114745141055393292
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1339964992830084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91d451ca7f07646d6ae921fe2ce9aebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114818046491548712
@@ -200,7 +212,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -960, y: -540}
+  m_AnchoredPosition: {x: -585, y: -179}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224514601020346064
