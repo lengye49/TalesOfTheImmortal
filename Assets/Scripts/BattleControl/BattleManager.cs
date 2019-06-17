@@ -161,8 +161,7 @@ public class BattleManager : MonoBehaviour
             targetPos = GetNearestOpponent(EnemyList);
         else
             targetPos = GetNearestOpponent(AllyList);
-
-
+            
         Vector2Int newPos = BattleMapManager.Instance.GetMovingTargetPos(actingUnit, targetPos);
         UnitMove(newPos);
     }

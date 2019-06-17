@@ -114,6 +114,7 @@ public class BattleMapManager:MonoBehaviour {
     /// </summary>
     public Vector2Int GetMovingTargetPos(BattleUnit unit,Vector2Int targetPos){
         standingGrid = mapGrids[unit.Position.x][unit.Position.y];
+        targetGrid = standingGrid;
         walkableRange = CircleTargets(unit.Steps);
         int distance = 0;
         int temp;
@@ -122,12 +123,15 @@ public class BattleMapManager:MonoBehaviour {
         bool tempStraight;
 
         distance = MathCalculator.GetBattleGridDistance(targetPos, walkableRange[0].Position, out isStraight);
+        Debug.Log("Total range = " + walkableRange.Count + "," + walkableRange[0].Position + "," + distance + "," + isStraight);
 
         for (int i = 1; i < walkableRange.Count;i++){
+            Debug.Log(walkableRange[i].Position+"," + walkableRange[i].Walkable);
             if (!walkableRange[i].Walkable)
                 continue;
             temp = MathCalculator.GetBattleGridDistance(targetPos, walkableRange[i].Position,out tempStraight);
-            if(temp < distance || (!isStraight && tempStraight)){
+            Debug.Log(walkableRange[i].Position + "," + distance + "," + isStraight);
+            if (temp < distance || (!isStraight && tempStraight)){
                 distance = temp;
                 isStraight = tempStraight;
                 index = i;
@@ -177,8 +181,8 @@ public class BattleMapManager:MonoBehaviour {
                 pos = Vector2Int.zero;
                 break;
         }
-        if (pos.x >= 0 && pos.y >= 0 && pos.x<mapGrids.Length && pos.y<mapGrids[0].Length)
-            return new BattleGrid(pos.x, pos.y);
+        if (pos.x >= 0 && pos.y >= 0 && pos.x < mapGrids.Length && pos.y < mapGrids[0].Length)
+            return GetBattleGridByPos(pos);
         else
             return null;
     }
@@ -273,10 +277,6 @@ public class BattleMapManager:MonoBehaviour {
         return grids;
     }
 
-    //public List<Vector2Int> GetCircleTargetPos(){
-
-    //}
-
     List<BattleGrid> GetNeighbour(BattleGrid grid){
         return new List<BattleGrid>
         {
@@ -288,6 +288,7 @@ public class BattleMapManager:MonoBehaviour {
             GetGridByDirection(grid, GridDirection.Down)
         };
     }
+
 
     List<BattleGrid> GetFanNeighbour(BattleGrid grid, List<GridDirection> directions)
     {
